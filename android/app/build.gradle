@@ -1,0 +1,30 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    // Firebase / FCM (Parte 6)
+    id "com.google.gms.google-services"
+}
+
+android {
+    namespace = "br.com.fiap.digital360"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "br.com.fiap.digital360"
+        minSdk = 23
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    buildTypes {
+        release {
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}

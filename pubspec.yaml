@@ -1,0 +1,46 @@
+name: digital360_flutter
+description: Smart HAS / Digital 360 - App de inclusao digital e AI Logistics (FIAP, Sociedade 5.0).
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+
+  # Gerenciamento de estado (Parte 4 - Provider)
+  provider: ^6.1.2
+
+  # Comunicacao HTTP / Web Services (Parte 6)
+  http: ^1.2.2
+
+  # Persistencia local (sessao / favoritos)
+  shared_preferences: ^2.3.2
+
+  # Mapas e Geolocalizacao (Parte 5)
+  google_maps_flutter: ^2.9.0
+  geolocator: ^13.0.1
+
+  # Firebase + Cloud Messaging (Parte 6)
+  firebase_core: ^3.6.0
+  firebase_messaging: ^15.1.3
+  flutter_local_notifications: ^17.2.3
+
+  # Formatacao
+  intl: ^0.19.0
+
+  # Tipografia profissional (Plus Jakarta Sans)
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
