@@ -13,7 +13,7 @@ class WeatherService {
       '?latitude=$lat&longitude=$lon'
       '&current=temperature_2m,precipitation,weather_code,wind_speed_10m',
     );
-    final res = await http.get(uri);
+    final res = await http.get(uri).timeout(const Duration(seconds: 8));
     if (res.statusCode == 200) {
       final j = jsonDecode(res.body);
       final c = j['current'] ?? {};

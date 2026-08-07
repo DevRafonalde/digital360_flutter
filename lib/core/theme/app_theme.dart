@@ -55,7 +55,7 @@ class AppTheme {
         titleTextStyle: textTheme.titleLarge,
         iconTheme: const IconThemeData(color: AppColors.onBackground),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.surfaceCard,
         elevation: 0,
         margin: const EdgeInsets.only(bottom: s3),
@@ -115,6 +115,112 @@ class AppTheme {
         behavior: SnackBarBehavior.floating,
       ),
       dividerColor: AppColors.divider,
+    );
+  }
+
+  // ---- Tema claro (alternativa de alto contraste para quem prefere fundo
+  // claro - parte do publico idoso do app) ----
+  static const _lightBg = Color(0xFFF4F6F5);
+  static const _lightSurface = Color(0xFFFFFFFF);
+  static const _lightOnBg = Color(0xFF10120F);
+  static const _lightOnSurfaceMuted = Color(0xFF5B615E);
+  static const _lightOutline = Color(0xFFDCE1DE);
+
+  static ThemeData get light {
+    final base = ThemeData.light(useMaterial3: true);
+
+    final textTheme = GoogleFonts.plusJakartaSansTextTheme(base.textTheme).copyWith(
+      displaySmall: GoogleFonts.plusJakartaSans(
+          fontSize: 28, fontWeight: FontWeight.w700, color: _lightOnBg),
+      headlineSmall: GoogleFonts.plusJakartaSans(
+          fontSize: 22, fontWeight: FontWeight.w700, color: _lightOnBg),
+      titleLarge: GoogleFonts.plusJakartaSans(
+          fontSize: 18, fontWeight: FontWeight.w600, color: _lightOnBg),
+      titleMedium: GoogleFonts.plusJakartaSans(
+          fontSize: 16, fontWeight: FontWeight.w600, color: _lightOnBg),
+      bodyLarge: GoogleFonts.plusJakartaSans(fontSize: 16, height: 1.5, color: _lightOnBg),
+      bodyMedium: GoogleFonts.plusJakartaSans(
+          fontSize: 15, height: 1.5, color: _lightOnBg),
+      labelLarge: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w600),
+    );
+
+    return base.copyWith(
+      scaffoldBackgroundColor: _lightBg,
+      textTheme: textTheme,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.primaryDark,
+        secondary: AppColors.secondaryDark,
+        surface: _lightSurface,
+        onPrimary: Colors.white,
+        onSurface: _lightOnBg,
+        error: AppColors.riskCritical,
+      ),
+      appBarTheme: AppBarTheme(
+        backgroundColor: _lightBg,
+        elevation: 0,
+        scrolledUnderElevation: 0,
+        centerTitle: false,
+        titleTextStyle: textTheme.titleLarge,
+        iconTheme: const IconThemeData(color: _lightOnBg),
+      ),
+      cardTheme: CardThemeData(
+        color: _lightSurface,
+        elevation: 0,
+        margin: const EdgeInsets.only(bottom: s3),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+          side: const BorderSide(color: _lightOutline),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: const Color(0xFFEEF0EE),
+        contentPadding: const EdgeInsets.symmetric(horizontal: s4, vertical: s4),
+        hintStyle: const TextStyle(color: _lightOnSurfaceMuted),
+        labelStyle: const TextStyle(color: _lightOnBg),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: _lightOutline),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: _lightOutline),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppColors.primaryDark, width: 2),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryDark,
+          foregroundColor: Colors.white,
+          minimumSize: const Size.fromHeight(56),
+          textStyle: GoogleFonts.plusJakartaSans(fontSize: 16, fontWeight: FontWeight.w700),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          minimumSize: const Size.fromHeight(54),
+          textStyle: GoogleFonts.plusJakartaSans(fontSize: 15, fontWeight: FontWeight.w600),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: _lightSurface,
+        selectedItemColor: AppColors.primaryDark,
+        unselectedItemColor: _lightOnSurfaceMuted,
+        type: BottomNavigationBarType.fixed,
+        selectedLabelStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        showUnselectedLabels: true,
+      ),
+      snackBarTheme: const SnackBarThemeData(
+        backgroundColor: _lightOnBg,
+        contentTextStyle: TextStyle(color: Colors.white),
+        behavior: SnackBarBehavior.floating,
+      ),
+      dividerColor: _lightOutline,
     );
   }
 }

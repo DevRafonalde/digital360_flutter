@@ -14,6 +14,12 @@ class LocationService {
     }
     if (permissao == LocationPermission.deniedForever) return null;
 
-    return Geolocator.getCurrentPosition();
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(timeLimit: Duration(seconds: 8)),
+      );
+    } catch (_) {
+      return null; // GPS lento/indisponivel - mapa segue funcionando sem a posicao do usuario
+    }
   }
 }

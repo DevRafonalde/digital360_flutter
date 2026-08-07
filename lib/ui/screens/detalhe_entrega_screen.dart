@@ -10,8 +10,9 @@ import '../widgets/risk_badge.dart';
 import 'assistente_screen.dart';
 
 /// Detalhe da entrega: dispara recalculo de risco (motor AI Logistics),
-/// consulta o clima na regiao (Open-Meteo) e permite resolver endereco por CEP
-/// (ViaCEP) - integrando os dois web services externos da Parte 6.
+/// consulta o clima na regiao (Open-Meteo, e o resultado agora realmente
+/// entra na conta do risco) e permite resolver endereco por CEP (ViaCEP) -
+/// integrando os dois web services externos da Parte 6.
 class DetalheEntregaScreen extends StatefulWidget {
   final PedidoLogistico pedido;
   const DetalheEntregaScreen({super.key, required this.pedido});
@@ -27,8 +28,10 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
 
   RiscoLogistico? _risco;
   WeatherInfo? _clima;
+  String? _climaErro;
   Endereco? _endereco;
   bool _calculando = false;
+  bool _reagendando = false;
   String? _cepErro;
 
   @override
@@ -44,25 +47,108 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
   }
 
   Future<void> _carregarClima() async {
+    setState(() => _climaErro = null);
     try {
       final c = await _weather.obterClima(
           widget.pedido.latitude, widget.pedido.longitude);
       if (mounted) setState(() => _clima = c);
-    } catch (_) {/* clima opcional */}
+    } catch (_) {
+      if (mounted) setState(() => _climaErro = 'Clima indisponível no momento.');
+    }
   }
 
   Future<void> _recalcular() async {
     setState(() => _calculando = true);
     final auth = context.read<AuthProvider>();
     final logistica = context.read<LogisticaProvider>();
+    // O impacto do clima (0-25) so entra na conta se a consulta deu certo -
+    // sem isso, o texto "impacto no risco" na tela era so decoracao.
+    final impactoClima = _clima?.impactoRisco ?? 0;
     final r = await logistica.recalcularRisco(
-        auth.usuario?.bearer ?? '', widget.pedido);
+        auth.usuario?.bearer ?? '', widget.pedido, impactoClima: impactoClima);
     if (mounted) {
       setState(() {
         _risco = r;
         _calculando = false;
       });
     }
+  }
+
+  Future<void> _confirmarReagendar() async {
+    final confirmou = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Reagendar entrega?'),
+        content: Text(
+            'Vamos reagendar o pedido ${widget.pedido.codigoPedido} e reiniciar o acompanhamento de risco.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
+          ElevatedButton(onPressed: () => Navigator.pop(context, true), child: const Text('Confirmar')),
+        ],
+      ),
+    );
+    if (confirmou != true || !mounted) return;
+
+    setState(() => _reagendando = true);
+    final auth = context.read<AuthProvider>();
+    final logistica = context.read<LogisticaProvider>();
+    await logistica.reagendar(auth.usuario?.bearer ?? '', widget.pedido);
+    if (!mounted) return;
+    setState(() {
+      _reagendando = false;
+      _risco = null;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Entrega reagendada com sucesso.')),
+    );
+  }
+
+  Future<void> _abrirFeedback() async {
+    int nota = 5;
+    final comentarioCtrl = TextEditingController();
+    final enviar = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          title: const Text('Como foi sua entrega?'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (i) {
+                  final valor = i + 1;
+                  return IconButton(
+                    onPressed: () => setDialogState(() => nota = valor),
+                    icon: Icon(
+                      valor <= nota ? Icons.star : Icons.star_border,
+                      color: AppColors.primary,
+                    ),
+                  );
+                }),
+              ),
+              TextField(
+                controller: comentarioCtrl,
+                decoration: const InputDecoration(hintText: 'Comentário (opcional)'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancelar')),
+            ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Enviar')),
+          ],
+        ),
+      ),
+    );
+    if (enviar != true || !mounted) return;
+    final auth = context.read<AuthProvider>();
+    final logistica = context.read<LogisticaProvider>();
+    await logistica.enviarFeedback(
+        auth.usuario?.bearer ?? '', widget.pedido.id, nota, comentarioCtrl.text.trim());
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Obrigado pelo seu feedback!')),
+    );
   }
 
   Future<void> _buscarCep() async {
@@ -78,6 +164,10 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
   @override
   Widget build(BuildContext context) {
     final p = widget.pedido;
+    final riscoAtual = _risco ?? context.watch<LogisticaProvider>().riscos[p.id];
+    final podeReagendar = riscoAtual != null &&
+        (riscoAtual.riscoNivel == 'ALTO' || riscoAtual.riscoNivel == 'CRITICO');
+
     return Scaffold(
       appBar: AppBar(title: Text(p.codigoPedido)),
       body: ListView(
@@ -121,14 +211,21 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
                   const Icon(Icons.cloud_outlined, color: AppColors.accent),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: _clima == null
-                        ? const Text('Consultando clima na região (Open-Meteo)...')
-                        : Text(
-                            'Clima: ${_clima!.temperatura.toStringAsFixed(0)} C, '
-                            '${_clima!.descricao}\n'
-                            'Impacto no risco: +${_clima!.impactoRisco}',
-                            style: const TextStyle(height: 1.4),
-                          ),
+                    child: _climaErro != null
+                        ? Row(
+                            children: [
+                              Expanded(child: Text(_climaErro!)),
+                              TextButton(onPressed: _carregarClima, child: const Text('Tentar de novo')),
+                            ],
+                          )
+                        : _clima == null
+                            ? const Text('Consultando clima na região (Open-Meteo)...')
+                            : Text(
+                                'Clima: ${_clima!.temperatura.toStringAsFixed(0)} °C, '
+                                '${_clima!.descricao}\n'
+                                'Impacto no risco: +${_clima!.impactoRisco} (já considerado no cálculo)',
+                                style: const TextStyle(height: 1.4),
+                              ),
                   ),
                 ],
               ),
@@ -137,7 +234,7 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
           const SizedBox(height: 16),
 
           // ---- Motor de risco (AI Logistics) ----
-          if (_risco != null)
+          if (riscoAtual != null)
             Card(
               color: AppColors.surfaceVariant,
               child: Padding(
@@ -145,11 +242,11 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RiskBadge(nivel: _risco!.riscoNivel, score: _risco!.riscoScore),
+                    RiskBadge(nivel: riscoAtual.riscoNivel, score: riscoAtual.riscoScore),
                     const SizedBox(height: 10),
-                    Text(_risco!.recomendacao, style: const TextStyle(height: 1.4)),
+                    Text(riscoAtual.recomendacao, style: const TextStyle(height: 1.4)),
                     const SizedBox(height: 6),
-                    Text(_risco!.mensagemCliente,
+                    Text(riscoAtual.mensagemCliente,
                         style: const TextStyle(
                             color: AppColors.onSurfaceMuted, fontStyle: FontStyle.italic)),
                   ],
@@ -165,6 +262,18 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
                 : const Icon(Icons.calculate_outlined),
             label: const Text('Recalcular risco de entrega'),
           ),
+          if (podeReagendar) ...[
+            const SizedBox(height: 12),
+            ElevatedButton.icon(
+              onPressed: _reagendando ? null : _confirmarReagendar,
+              icon: _reagendando
+                  ? const SizedBox(
+                      height: 18, width: 18, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
+                  : const Icon(Icons.event_repeat),
+              label: const Text('Reagendar entrega'),
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.riskHigh),
+            ),
+          ],
           const SizedBox(height: 12),
           OutlinedButton.icon(
             onPressed: () => Navigator.push(
@@ -179,6 +288,15 @@ class _DetalheEntregaScreenState extends State<DetalheEntregaScreen> {
               side: const BorderSide(color: AppColors.secondary),
             ),
           ),
+          if (p.statusAtual == 'ENTREGUE') ...[
+            const SizedBox(height: 12),
+            OutlinedButton.icon(
+              onPressed: _abrirFeedback,
+              icon: const Icon(Icons.star_outline),
+              label: const Text('Avaliar esta entrega'),
+              style: OutlinedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+            ),
+          ],
           const SizedBox(height: 20),
 
           // ---- Web Service 2: ViaCEP (endereco) ----

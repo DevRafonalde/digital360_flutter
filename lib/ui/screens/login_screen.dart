@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../providers/auth_provider.dart';
+import '../widgets/wordmark.dart';
 import 'home_screen.dart';
 import 'register_screen.dart';
 
@@ -22,6 +23,29 @@ class _LoginScreenState extends State<LoginScreen> {
     _user.dispose();
     _senha.dispose();
     super.dispose();
+  }
+
+  Future<void> _esqueciSenha() async {
+    final ctrl = TextEditingController(text: _user.text);
+    final nomeUser = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Recuperar senha'),
+        content: TextField(
+          controller: ctrl,
+          decoration: const InputDecoration(labelText: 'Nome de usuário'),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancelar')),
+          ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, ctrl.text.trim()), child: const Text('Enviar')),
+        ],
+      ),
+    );
+    if (nomeUser == null || nomeUser.isEmpty || !mounted) return;
+    final msg = await context.read<AuthProvider>().solicitarRecuperacaoSenha(nomeUser);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 
   Future<void> _entrar({bool demo = false}) async {
@@ -68,10 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Icon(Icons.hub, color: Colors.white, size: 40),
                   ),
                   const SizedBox(height: 16),
-                  const Text('Digital 360',
-                      style: TextStyle(
-                          fontSize: 28, fontWeight: FontWeight.bold)),
-                  const Text('Inclusão Digital para Todos',
+                  const Wordmark(fontSize: 28),
+                  const Text('Inclusão Digital para a Sociedade 5.0',
                       style: TextStyle(color: AppColors.onSurfaceMuted)),
                   const SizedBox(height: 32),
                   TextFormField(
@@ -92,7 +114,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: (v) =>
                         (v == null || v.isEmpty) ? 'Informe a senha' : null,
                   ),
-                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _esqueciSenha,
+                      child: const Text('Esqueci minha senha'),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: auth.status == AuthStatus.loading
                         ? null
