@@ -208,5 +208,7 @@ flutter drive --driver=test_driver/integration_test.dart --target=integration_te
 - O backend real agora tem persistência de verdade (SQLite) e autenticação JWT real
   (cadastro/login próprios, token validado por assinatura, CORS restrito por lista
   de origens) - ver [`backend/README.md`](backend/README.md) para detalhes.
-- Ainda sem testes de integração ponta-a-ponta automatizados (login → uso →
-  logout) no app Flutter - próximo passo natural depois deste ciclo.
+- O teste de integração ponta-a-ponta (`integration_test/app_test.dart`, seção
+  acima) está escrito, mas nunca foi executado com sucesso neste ambiente de
+  desenvolvimento - rodar numa máquina sem o bloqueio de rede do Gradle (ou com
+  `chromedriver` instalado) é o próximo passo natural para validá-lo de fato.
