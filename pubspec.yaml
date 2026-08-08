@@ -1,7 +1,7 @@
 name: digital360_flutter
 description: Smart HAS / Digital 360 - App de inclusao digital e AI Logistics (FIAP, Sociedade 5.0).
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.1.0+2
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -22,25 +22,57 @@ dependencies:
 
   # Mapas e Geolocalizacao (Parte 5)
   google_maps_flutter: ^2.9.0
-  geolocator: ^13.0.1
+  geolocator: ^14.0.3
+  # Fallback de mapa para Flutter Web (Google Maps exige chave que o grupo
+  # nao commitou por seguranca - flutter_map/OSM roda sem chave nenhuma).
+  flutter_map: ^8.3.1
+  latlong2: ^0.10.1
 
   # Firebase + Cloud Messaging (Parte 6)
   firebase_core: ^3.6.0
   firebase_messaging: ^15.1.3
-  flutter_local_notifications: ^17.2.3
+  flutter_local_notifications: ^19.4.2
+
+  # Firebase Analytics + Crashlytics - mesmo padrao defensivo (init protegido
+  # por try/catch) ja usado pro FCM: nao verificavel ponta-a-ponta neste
+  # ambiente (google-services.json e placeholder), documentado no README.
+  firebase_analytics: ^11.3.3
+  firebase_crashlytics: ^4.1.3
 
   # Formatacao
-  intl: ^0.19.0
+  intl: ^0.20.3
 
   # Tipografia profissional (Plus Jakarta Sans)
-  google_fonts: ^6.2.1
+  google_fonts: ^8.2.1
+
+  # Acessibilidade: leitura em voz alta e busca por voz (publico com baixo
+  # letramento digital se beneficia de nao depender so de leitura/digitacao)
+  flutter_tts: ^4.2.0
+  speech_to_text: ^7.0.0
+
+  # Armazenamento seguro dos tokens de sessao (em vez de SharedPreferences puro)
+  flutter_secure_storage: ^10.3.1
+
+  # Login biometrico - reautentica uma sessao JA SALVA, nao substitui o
+  # login por senha (a sessao continua sendo criada via usuario/senha real)
+  local_auth: ^2.3.0
+
+  # Certificado de conclusao de curso em PDF (gerado so no cliente)
+  pdf: ^3.11.1
+  printing: ^5.13.4
+
+  # Compartilhamento do codigo de indicacao via share sheet generico do SO
+  share_plus: ^13.3.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
 
 flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/libras/

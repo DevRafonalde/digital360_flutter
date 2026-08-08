@@ -53,6 +53,44 @@ class MockData {
         ),
       ];
 
+  /// Espelha heuristics.py::gerar_rascunho_curso do backend real - mesmo
+  /// template por regra fixa (NAO IA generativa), pro modo mock e o modo
+  /// real terem o mesmo comportamento de demo.
+  static List<String> gerarRascunhoCurso(String titulo, String nivel) {
+    final tituloNormalizado = titulo.trim().isEmpty ? 'este assunto' : titulo.trim();
+    final modulos = <String>[
+      'Introdução: por que aprender $tituloNormalizado',
+      'Passo a passo com exemplos práticos',
+      'Erros comuns e como evitá-los',
+    ];
+    if (nivel.toUpperCase() == 'INTERMEDIARIO' || nivel.toUpperCase() == 'AVANCADO') {
+      modulos.add('Aprofundando: casos do dia a dia');
+    }
+    if (nivel.toUpperCase() == 'AVANCADO') {
+      modulos.add('Cenários avançados e exceções');
+    }
+    modulos.add('Prática guiada e revisão final');
+    return modulos;
+  }
+
+  /// Espelha GET /metricas/impacto do backend real - numeros da sessao mock
+  /// atual (demo), rotulados honestamente como tal, nunca uma alegacao de
+  /// escala real.
+  static Map<String, dynamic> metricasImpacto({
+    required int cursosConcluidos,
+    required int cursosComunidade,
+    required int perguntasForum,
+  }) =>
+      {
+        'totalUsuarios': 1,
+        'totalCursosConcluidos': cursosConcluidos,
+        'totalCursosPublicados': cursos().length + cursosComunidade,
+        'totalCursosComunidade': cursosComunidade,
+        'totalPerguntasForum': perguntasForum,
+        'observacao':
+            'Números da sessão de demonstração atual (modo mock, sem backend), não uma métrica de escala real.',
+      };
+
   static List<Servico> servicos() => [
         Servico(
           id: 1,
@@ -164,13 +202,16 @@ class MockData {
       ];
 
   /// Heuristica de risco identica em espirito ao motor do backend (regras).
-  static RiscoLogistico calcularRisco(PedidoLogistico p) {
+  /// [impactoClima] (0-25) vem do clima consultado via Open-Meteo na tela de
+  /// detalhe - chuva/vento realmente aumentam o score, nao sao so texto.
+  static RiscoLogistico calcularRisco(PedidoLogistico p, {int impactoClima = 0}) {
     int score = 0;
     score += p.historicoAtrasos * 18;
     score += p.reagendamentos * 12;
     score += p.estoqueDisponivel ? 0 : 25;
     score += p.distanciaKm > 20 ? 15 : (p.distanciaKm > 10 ? 8 : 0);
     if (p.statusAtual == 'ATRASADO') score += 20;
+    score += impactoClima.clamp(0, 25);
     if (score > 100) score = 100;
 
     String nivel;
@@ -224,4 +265,59 @@ class MockData {
       'acaoRecomendada': 'INFORMAR',
     };
   }
+
+  /// Categorias em alta (deteccao de picos/sazonalidade) - espelha o formato
+  /// do endpoint real GET /tendencias do backend. Nomes de categoria
+  /// identicos aos usados em Servico.categoria (mesma acentuacao).
+  static List<Map<String, dynamic>> tendencias() => [
+        {
+          'categoria': 'Previdência',
+          'volumeUltimos7Dias': 34,
+          'mediaHistoricaDiaria': 2.1,
+          'emAlta': true,
+        },
+        {
+          'categoria': 'Documentos',
+          'volumeUltimos7Dias': 9,
+          'mediaHistoricaDiaria': 1.8,
+          'emAlta': false,
+        },
+        {
+          'categoria': 'Saúde',
+          'volumeUltimos7Dias': 6,
+          'mediaHistoricaDiaria': 1.2,
+          'emAlta': false,
+        },
+      ];
+
+  /// Top recomendacoes heuristicas - espelha o formato (cold-start) do
+  /// endpoint real GET /recomendacoes/{userId} do backend: prioriza o
+  /// curso de nivel BASICO e o primeiro servico quando o usuario nao tem
+  /// historico de eventos ainda.
+  static List<Map<String, dynamic>> recomendacoes() => [
+        {
+          'tipo': 'curso',
+          'id': 1,
+          'titulo': 'Primeiros passos no celular',
+          'nivel': 'BASICO',
+          'score': 100,
+          'motivo': 'cold-start',
+        },
+        {
+          'tipo': 'servico',
+          'id': 1,
+          'titulo': 'Consultar benefício do INSS',
+          'categoria': 'Previdência',
+          'score': 90,
+          'motivo': 'cold-start',
+        },
+        {
+          'tipo': 'curso',
+          'id': 2,
+          'titulo': 'Usando o gov.br',
+          'nivel': 'INTERMEDIARIO',
+          'score': 80,
+          'motivo': 'cold-start',
+        },
+      ];
 }

@@ -6,6 +6,7 @@ import '../../providers/logistica_provider.dart';
 import '../widgets/risk_badge.dart';
 import 'detalhe_entrega_screen.dart';
 import '../widgets/offline_banner.dart';
+import '../widgets/empty_state.dart';
 
 /// Lista de pedidos monitorados pela AI Logistics Extension.
 class LogisticaScreen extends StatefulWidget {
@@ -35,9 +36,15 @@ class _LogisticaScreenState extends State<LogisticaScreen> {
     }
     return Column(
       children: [
-        if (p.erro != null) const OfflineBanner(),
+        if (p.erro != null) OfflineBanner(mensagem: p.erro!),
         Expanded(
-          child: RefreshIndicator(
+          child: p.pedidos.isEmpty
+              ? const EmptyState(
+                  icone: Icons.local_shipping_outlined,
+                  titulo: 'Nenhuma entrega monitorada no momento',
+                  subtitulo: 'Puxe para atualizar',
+                )
+              : RefreshIndicator(
             onRefresh: _carregar,
             child: ListView.builder(
         padding: const EdgeInsets.all(16),

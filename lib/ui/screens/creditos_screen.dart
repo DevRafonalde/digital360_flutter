@@ -41,6 +41,10 @@ class CreditosScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(color: AppColors.onSurfaceMuted, height: 1.5),
           ),
+          const SizedBox(height: 16),
+          const Text('v1.1.0',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: AppColors.onSurfaceMuted, fontSize: 12)),
         ],
       ),
     );

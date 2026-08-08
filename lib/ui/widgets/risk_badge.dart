@@ -1,11 +1,36 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_colors.dart';
 
+/// Traduz os valores brutos dos enums do backend (sem acento, em maiusculas)
+/// para rotulos corretos em portugues, mantendo o mesmo padrao visual em
+/// caixa alta usado nos badges.
+const _rotulosNivelRisco = {
+  'BAIXO': 'BAIXO',
+  'MEDIO': 'MÉDIO',
+  'ALTO': 'ALTO',
+  'CRITICO': 'CRÍTICO',
+};
+
+const _rotulosStatus = {
+  'PENDENTE': 'PENDENTE',
+  'EM_TRANSITO': 'EM TRÂNSITO',
+  'ENTREGUE': 'ENTREGUE',
+  'ATRASADO': 'ATRASADO',
+};
+
+const _rotulosNivelCurso = {
+  'BASICO': 'BÁSICO',
+  'INTERMEDIARIO': 'INTERMEDIÁRIO',
+  'AVANCADO': 'AVANÇADO',
+};
+
 /// Chip de nivel de risco (AI Logistics) - semaforo de risco.
 class RiskBadge extends StatelessWidget {
   final String nivel; // BAIXO | MEDIO | ALTO | CRITICO
   final int? score;
   const RiskBadge({super.key, required this.nivel, this.score});
+
+  String get _rotulo => _rotulosNivelRisco[nivel.toUpperCase()] ?? nivel;
 
   Color get _cor {
     switch (nivel.toUpperCase()) {
@@ -25,12 +50,12 @@ class RiskBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: _cor.withOpacity(0.18),
+        color: _cor.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: _cor),
       ),
       child: Text(
-        score != null ? 'RISCO $nivel - $score' : 'RISCO $nivel',
+        score != null ? 'RISCO $_rotulo - $score' : 'RISCO $_rotulo',
         style: TextStyle(color: _cor, fontWeight: FontWeight.bold, fontSize: 12),
       ),
     );
@@ -55,14 +80,14 @@ class StatusChip extends StatelessWidget {
     }
   }
 
-  String get _label => status.replaceAll('_', ' ');
+  String get _label => _rotulosStatus[status.toUpperCase()] ?? status.replaceAll('_', ' ');
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: _cor.withOpacity(0.18),
+        color: _cor.withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(_label,
@@ -75,6 +100,8 @@ class StatusChip extends StatelessWidget {
 class NivelBadge extends StatelessWidget {
   final String nivel;
   const NivelBadge({super.key, required this.nivel});
+
+  String get _rotulo => _rotulosNivelCurso[nivel.toUpperCase()] ?? nivel;
 
   @override
   Widget build(BuildContext context) {
@@ -92,11 +119,39 @@ class NivelBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: cor.withOpacity(0.15),
+        color: cor.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(nivel,
+      child: Text(_rotulo,
           style: TextStyle(color: cor, fontWeight: FontWeight.w600, fontSize: 11)),
+    );
+  }
+}
+
+/// Badge "Criado pela comunidade" - distingue cursos de tutores dos oficiais.
+class ComunidadeBadge extends StatelessWidget {
+  const ComunidadeBadge({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppColors.statusInTransit.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.groups_outlined, size: 12, color: AppColors.statusInTransit),
+          SizedBox(width: 4),
+          Text('Comunidade',
+              style: TextStyle(
+                  color: AppColors.statusInTransit,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 11)),
+        ],
+      ),
     );
   }
 }

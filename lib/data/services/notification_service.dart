@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import '../../core/theme/app_colors.dart';
 
 /// Handler de mensagens recebidas em background (exigido pelo FCM).
 @pragma('vm:entry-point')
@@ -22,12 +23,22 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
   bool _firebaseOk = false;
 
+  /// Registrado pela camada de UI (main.dart), que sabe como navegar - este
+  /// servico so repassa o payload, sem conhecer telas/providers/rotas. Isso
+  /// evita que a camada de dados dependa da camada de UI.
+  void Function(String? payload)? onNotificacaoTocada;
+
   Future<void> init() async {
     // 1) Notificacoes locais (sempre disponiveis).
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
     const initSettings = InitializationSettings(android: androidInit);
     try {
-      await _local.initialize(initSettings);
+      await _local.initialize(
+        initSettings,
+        onDidReceiveNotificationResponse: (resposta) {
+          onNotificacaoTocada?.call(resposta.payload);
+        },
+      );
     } catch (e) {
       debugPrint('Local notifications init falhou: $e');
     }
@@ -63,9 +74,12 @@ class NotificationService {
 
   /// Dispara uma notificacao local. Usada para simular um alerta/aviso do
   /// sistema (ex.: "Pedido com risco ALTO de atraso"), conforme a Parte 6.
+  /// [payload] e repassado pra [onNotificacaoTocada] quando o usuario toca
+  /// na notificacao - usado pro deep link até a tela do pedido.
   Future<void> mostrarNotificacao({
     required String titulo,
     required String corpo,
+    String? payload,
   }) async {
     const androidDetails = AndroidNotificationDetails(
       'smart_has_alertas',
@@ -73,7 +87,7 @@ class NotificationService {
       channelDescription: 'Alertas de logística e avisos do sistema',
       importance: Importance.max,
       priority: Priority.high,
-      color: Color.fromARGB(255, 255, 107, 53),
+      color: AppColors.primary,
     );
     const details = NotificationDetails(android: androidDetails);
     try {
@@ -82,6 +96,7 @@ class NotificationService {
         titulo,
         corpo,
         details,
+        payload: payload,
       );
     } catch (e) {
       debugPrint('Falha ao exibir notificacao: $e');

@@ -1,0 +1,76 @@
+<svg viewBox="0 0 1000 460" xmlns="http://www.w3.org/2000/svg" font-family="Arial, Helvetica, sans-serif">
+  <rect x="0" y="0" width="1000" height="460" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="500" y="34" text-anchor="middle" font-size="20" font-weight="bold" fill="#1a1a2e">
+    Digital 360 — AI Logistics Extension — Arquitetura
+  </text>
+
+  <!-- App Flutter -->
+  <rect x="40" y="80" width="260" height="300" rx="14" fill="#FFF3EE" stroke="#FF6B35" stroke-width="2"/>
+  <text x="170" y="110" text-anchor="middle" font-size="15" font-weight="bold" fill="#B94A1E">App Flutter</text>
+  <rect x="60" y="128" width="220" height="46" rx="8" fill="#ffffff" stroke="#FF6B35"/>
+  <text x="170" y="156" text-anchor="middle" font-size="13" fill="#333">UI (Screens/Widgets)</text>
+  <rect x="60" y="184" width="220" height="46" rx="8" fill="#ffffff" stroke="#FF6B35"/>
+  <text x="170" y="212" text-anchor="middle" font-size="13" fill="#333">Provider (Estado)</text>
+  <rect x="60" y="240" width="220" height="46" rx="8" fill="#ffffff" stroke="#FF6B35"/>
+  <text x="170" y="268" text-anchor="middle" font-size="13" fill="#333">ApiService (Rede)</text>
+  <rect x="60" y="296" width="220" height="60" rx="8" fill="#FFE3D6" stroke="#FF6B35"/>
+  <text x="170" y="320" text-anchor="middle" font-size="12" font-weight="bold" fill="#B94A1E">useMock = true / false</text>
+  <text x="170" y="340" text-anchor="middle" font-size="11" fill="#8a4224">roda com ou sem backend</text>
+
+  <!-- Arrow 1 -->
+  <line x1="300" y1="230" x2="380" y2="230" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="340" y="216" text-anchor="middle" font-size="11" fill="#666">HTTPS</text>
+
+  <!-- Backend FastAPI -->
+  <rect x="390" y="80" width="280" height="300" rx="14" fill="#EAFBF6" stroke="#00A87F" stroke-width="2"/>
+  <text x="530" y="110" text-anchor="middle" font-size="15" font-weight="bold" fill="#00714F">AI Logistics API (Python/FastAPI)</text>
+  <rect x="410" y="128" width="240" height="34" rx="8" fill="#ffffff" stroke="#00A87F"/>
+  <text x="530" y="150" text-anchor="middle" font-size="12" fill="#333">GET /pedidos · /pedidos/{id}/entrega</text>
+  <rect x="410" y="170" width="240" height="34" rx="8" fill="#ffffff" stroke="#00A87F"/>
+  <text x="530" y="192" text-anchor="middle" font-size="12" fill="#333">POST /entregas/{id}/recalcular-risco</text>
+  <rect x="410" y="212" width="240" height="34" rx="8" fill="#ffffff" stroke="#00A87F"/>
+  <text x="530" y="234" text-anchor="middle" font-size="12" fill="#333">POST /assistente-logistico/pergunta</text>
+  <rect x="410" y="254" width="240" height="34" rx="8" fill="#ffffff" stroke="#00A87F"/>
+  <text x="530" y="276" text-anchor="middle" font-size="12" fill="#333">GET /recomendacoes/{userId}</text>
+  <rect x="410" y="296" width="240" height="34" rx="8" fill="#ffffff" stroke="#00A87F"/>
+  <text x="530" y="318" text-anchor="middle" font-size="12" fill="#333">GET /tendencias · POST /eventos</text>
+  <rect x="410" y="338" width="240" height="26" rx="6" fill="#00A87F"/>
+  <text x="530" y="356" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">21 testes automatizados (pytest)</text>
+
+  <!-- Arrow 2 -->
+  <line x1="670" y1="230" x2="740" y2="230" stroke="#666" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Heuristicas -->
+  <rect x="750" y="130" width="210" height="200" rx="14" fill="#F5EEFB" stroke="#8B5CF6" stroke-width="2"/>
+  <text x="855" y="160" text-anchor="middle" font-size="14" font-weight="bold" fill="#5B21B6">Motores heurísticos</text>
+  <text x="855" y="190" text-anchor="middle" font-size="12" fill="#333">Score de risco</text>
+  <text x="855" y="212" text-anchor="middle" font-size="12" fill="#333">Recomendação</text>
+  <text x="855" y="234" text-anchor="middle" font-size="12" fill="#333">(frequência + novidade)</text>
+  <text x="855" y="260" text-anchor="middle" font-size="12" fill="#333">Detecção de picos</text>
+  <text x="855" y="282" text-anchor="middle" font-size="12" fill="#333">(média + desvio-padrão)</text>
+  <text x="855" y="312" text-anchor="middle" font-size="11" fill="#7C3AED" font-style="italic">MVP por regras — ML é</text>
+  <text x="855" y="326" text-anchor="middle" font-size="11" fill="#7C3AED" font-style="italic">evolução da Fase 5</text>
+
+  <!-- Bottom row: external integrations -->
+  <text x="500" y="410" text-anchor="middle" font-size="13" font-weight="bold" fill="#1a1a2e">Integrações externas do app</text>
+  <g font-size="11" fill="#333">
+    <rect x="60" y="424" width="150" height="28" rx="6" fill="#EEF2FF" stroke="#6366F1"/>
+    <text x="135" y="443" text-anchor="middle">Firebase (FCM)</text>
+    <rect x="230" y="424" width="150" height="28" rx="6" fill="#EEF2FF" stroke="#6366F1"/>
+    <text x="305" y="443" text-anchor="middle">Open-Meteo</text>
+    <rect x="400" y="424" width="150" height="28" rx="6" fill="#EEF2FF" stroke="#6366F1"/>
+    <text x="475" y="443" text-anchor="middle">ViaCEP</text>
+    <rect x="570" y="424" width="150" height="28" rx="6" fill="#EEF2FF" stroke="#6366F1"/>
+    <text x="645" y="443" text-anchor="middle">Google Maps (mobile)</text>
+    <rect x="740" y="424" width="200" height="28" rx="6" fill="#EEF2FF" stroke="#6366F1"/>
+    <text x="840" y="443" text-anchor="middle">OpenStreetMap (web)</text>
+  </g>
+
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#666"/>
+    </marker>
+  </defs>
+</svg>

@@ -12,7 +12,9 @@ class ViaCepService {
     if (clean.length != 8) {
       throw Exception('CEP invalido');
     }
-    final res = await http.get(Uri.parse('${ApiConstants.viaCepUrl}/$clean/json/'));
+    final res = await http
+        .get(Uri.parse('${ApiConstants.viaCepUrl}/$clean/json/'))
+        .timeout(const Duration(seconds: 8));
     if (res.statusCode == 200) {
       final j = jsonDecode(res.body);
       if (j['erro'] == true) throw Exception('CEP nao encontrado');

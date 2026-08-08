@@ -7,11 +7,11 @@ class PedidoLogistico {
   final String regiaoEntrega;
   final int distanciaKm;
   final String prazoPrometido;
-  final String statusAtual; // PENDENTE | EM_TRANSITO | ENTREGUE | ATRASADO
+  String statusAtual; // PENDENTE | EM_TRANSITO | ENTREGUE | ATRASADO - mutavel (reagendamento)
   final String parceiroLogistico;
   final bool estoqueDisponivel;
   final int historicoAtrasos;
-  final int reagendamentos;
+  int reagendamentos; // mutavel - incrementa a cada reagendamento
   // Coordenadas para o mapa (Parte 5).
   final double latitude;
   final double longitude;

@@ -11,13 +11,18 @@ void main() {
     expect(find.textContaining('87'), findsOneWidget);
   });
 
-  testWidgets('StatusChip troca underline por espaco', (tester) async {
+  testWidgets('StatusChip traduz o status com acentuacao correta', (tester) async {
     await tester.pumpWidget(wrap(const StatusChip(status: 'EM_TRANSITO')));
-    expect(find.text('EM TRANSITO'), findsOneWidget);
+    expect(find.text('EM TRÂNSITO'), findsOneWidget);
   });
 
-  testWidgets('NivelBadge renderiza o nivel do curso', (tester) async {
+  testWidgets('NivelBadge renderiza o nivel do curso com acentuacao correta', (tester) async {
     await tester.pumpWidget(wrap(const NivelBadge(nivel: 'BASICO')));
-    expect(find.text('BASICO'), findsOneWidget);
+    expect(find.text('BÁSICO'), findsOneWidget);
+  });
+
+  testWidgets('RiskBadge traduz nivel MEDIO/CRITICO com acento', (tester) async {
+    await tester.pumpWidget(wrap(const RiskBadge(nivel: 'CRITICO', score: 99)));
+    expect(find.textContaining('CRÍTICO'), findsOneWidget);
   });
 }

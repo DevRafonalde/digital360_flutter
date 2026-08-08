@@ -5,6 +5,11 @@ import '../../providers/auth_provider.dart';
 import '../../providers/cursos_provider.dart';
 import '../../data/services/notification_service.dart';
 import 'assistente_screen.dart';
+import 'conquistas_screen.dart';
+import 'forum_screen.dart';
+import 'impacto_screen.dart';
+import 'tendencias_screen.dart';
+import 'recomendacoes_screen.dart';
 
 /// Tela inicial: painel de jornada do usuario (rastreabilidade da AI Logistics)
 /// + atalhos. Equivale ao HomeFragment do Kotlin.
@@ -75,10 +80,20 @@ class _InicioTabState extends State<InicioTab> {
         const SizedBox(height: 16),
         const Text('Atalhos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 12),
+        _atalho(Icons.auto_awesome_outlined, 'Recomendado para você',
+            'Sugestões calculadas pelo motor de recomendação da IA', () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const RecomendacoesScreen()));
+        }),
         _atalho(Icons.smart_toy_outlined, 'Assistente de IA',
             'Tire dúvidas sobre serviços e entregas', () {
           Navigator.push(context,
               MaterialPageRoute(builder: (_) => const AssistenteScreen()));
+        }),
+        _atalho(Icons.trending_up, 'Tendências e Sazonalidade',
+            'Veja os picos de demanda detectados pela IA', () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (_) => const TendenciasScreen()));
         }),
         _atalho(Icons.notifications_active_outlined, 'Testar alerta (FCM/local)',
             'Simula uma notificação push do sistema', () {
@@ -90,6 +105,21 @@ class _InicioTabState extends State<InicioTab> {
             const SnackBar(content: Text('Notificação disparada!')),
           );
         }),
+        const SizedBox(height: 8),
+        const Text('Comunidade', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+        const SizedBox(height: 12),
+        _atalho(Icons.forum_outlined, 'Fórum da comunidade',
+            'Tire dúvidas e ajude outras pessoas', () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ForumScreen()));
+        }),
+        _atalho(Icons.emoji_events_outlined, 'Minhas conquistas',
+            'Cursos concluídos, sequência de dias e ranking', () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ConquistasScreen()));
+        }),
+        _atalho(Icons.insights_outlined, 'Painel de impacto',
+            'Números da comunidade Digital 360', () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ImpactoScreen()));
+        }),
       ],
     );
   }
@@ -98,7 +128,7 @@ class _InicioTabState extends State<InicioTab> {
     return Card(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: AppColors.primary.withOpacity(0.15),
+          backgroundColor: AppColors.primary.withValues(alpha: 0.15),
           child: Icon(icon, color: AppColors.primary),
         ),
         title: Text(titulo, style: const TextStyle(fontWeight: FontWeight.w600)),
