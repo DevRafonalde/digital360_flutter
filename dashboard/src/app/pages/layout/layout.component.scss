@@ -1,0 +1,75 @@
+.shell {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+}
+
+.sidebar {
+  width: 220px;
+  background: #1a1a2e;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+
+  .brand {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    padding: 0 0.5rem;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+
+    a {
+      color: #cfcfe8;
+      text-decoration: none;
+      padding: 0.65rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      &.ativo {
+        background: #ff6b35;
+        color: #fff;
+      }
+    }
+  }
+
+  .usuario {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.85rem;
+
+    button {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #fff;
+      border-radius: 6px;
+      padding: 0.3rem 0.6rem;
+      cursor: pointer;
+      font-size: 0.75rem;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    }
+  }
+}
+
+.conteudo {
+  flex: 1;
+  background: #f4f5f9;
+  padding: 2rem;
+  overflow-y: auto;
+}

@@ -1,0 +1,57 @@
+<h1>Guia de servicos publicos</h1>
+<p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+<div class="layout">
+  <form class="formulario" (ngSubmit)="salvar()" #servicoForm="ngForm">
+    <h2>{{ editandoId ? 'Editar servico' : 'Novo servico' }}</h2>
+
+    <label for="titulo">Titulo</label>
+    <input id="titulo" name="titulo" type="text" [(ngModel)]="formulario.titulo" required />
+
+    <label for="descricao">Descricao</label>
+    <input id="descricao" name="descricao" type="text" [(ngModel)]="formulario.descricao" required />
+
+    <label for="categoria">Categoria</label>
+    <input id="categoria" name="categoria" type="text" [(ngModel)]="formulario.categoria" required />
+
+    <label for="orgao">Orgao</label>
+    <input id="orgao" name="orgao" type="text" [(ngModel)]="formulario.orgao" required />
+
+    <label for="conteudo">Conteudo (passo a passo)</label>
+    <textarea id="conteudo" name="conteudo" rows="4" [(ngModel)]="formulario.conteudo" required></textarea>
+
+    <div class="acoes">
+      <button type="submit" [disabled]="servicoForm.invalid">{{ editandoId ? 'Salvar' : 'Adicionar' }}</button>
+      <button type="button" class="secundario" *ngIf="editandoId" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+
+  <div class="lista">
+    <p *ngIf="carregando()">Carregando...</p>
+
+    <table *ngIf="!carregando()">
+      <thead>
+        <tr>
+          <th>Titulo</th>
+          <th>Categoria</th>
+          <th>Orgao</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let servico of servicos()">
+          <td>{{ servico.titulo }}</td>
+          <td>{{ servico.categoria }}</td>
+          <td>{{ servico.orgao }}</td>
+          <td class="acoes-linha">
+            <button (click)="editar(servico)">Editar</button>
+            <button class="perigo" (click)="remover(servico)">Excluir</button>
+          </td>
+        </tr>
+        <tr *ngIf="servicos().length === 0">
+          <td colspan="4">Nenhum servico cadastrado ainda.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

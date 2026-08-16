@@ -1,0 +1,109 @@
+h1 {
+  margin: 0 0 1rem;
+}
+
+.erro {
+  color: #c0392b;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.formulario {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+  }
+
+  label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #444;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font: inherit;
+  }
+
+  .acoes {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  button {
+    padding: 0.55rem 1rem;
+    border: none;
+    border-radius: 6px;
+    background: #ff6b35;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    &.secundario {
+      background: #eee;
+      color: #333;
+    }
+  }
+}
+
+.lista {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+  }
+
+  .acoes-linha {
+    display: flex;
+    gap: 0.4rem;
+
+    button {
+      padding: 0.35rem 0.6rem;
+      border: none;
+      border-radius: 6px;
+      background: #eee;
+      cursor: pointer;
+      font-size: 0.8rem;
+
+      &.perigo {
+        background: #fde8e8;
+        color: #c0392b;
+      }
+    }
+  }
+}
