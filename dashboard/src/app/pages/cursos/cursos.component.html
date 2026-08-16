@@ -1,0 +1,63 @@
+<h1>Trilhas de curso</h1>
+<p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+<div class="layout">
+  <form class="formulario" (ngSubmit)="salvar()" #cursoForm="ngForm">
+    <h2>{{ editandoId ? 'Editar curso' : 'Novo curso' }}</h2>
+
+    <label for="titulo">Titulo</label>
+    <input id="titulo" name="titulo" type="text" [(ngModel)]="formulario.titulo" required />
+
+    <label for="descricao">Descricao</label>
+    <textarea id="descricao" name="descricao" rows="3" [(ngModel)]="formulario.descricao" required></textarea>
+
+    <label for="nivel">Nivel</label>
+    <select id="nivel" name="nivel" [(ngModel)]="formulario.nivel" required>
+      <option value="BASICO">Basico</option>
+      <option value="INTERMEDIARIO">Intermediario</option>
+      <option value="AVANCADO">Avancado</option>
+    </select>
+
+    <label for="cargaHoraria">Carga horaria (h)</label>
+    <input id="cargaHoraria" name="cargaHoraria" type="number" min="1" [(ngModel)]="formulario.cargaHoraria" required />
+
+    <label for="totalModulos">Total de modulos</label>
+    <input id="totalModulos" name="totalModulos" type="number" min="1" [(ngModel)]="formulario.totalModulos" required />
+
+    <div class="acoes">
+      <button type="submit" [disabled]="cursoForm.invalid">{{ editandoId ? 'Salvar' : 'Adicionar' }}</button>
+      <button type="button" class="secundario" *ngIf="editandoId" (click)="cancelar()">Cancelar</button>
+    </div>
+  </form>
+
+  <div class="lista">
+    <p *ngIf="carregando()">Carregando...</p>
+
+    <table *ngIf="!carregando()">
+      <thead>
+        <tr>
+          <th>Titulo</th>
+          <th>Nivel</th>
+          <th>Carga</th>
+          <th>Progresso</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let curso of cursos()">
+          <td>{{ curso.titulo }}</td>
+          <td>{{ curso.nivel }}</td>
+          <td>{{ curso.cargaHoraria }}h</td>
+          <td>{{ curso.progresso }}%</td>
+          <td class="acoes-linha">
+            <button (click)="editar(curso)">Editar</button>
+            <button class="perigo" (click)="remover(curso)">Excluir</button>
+          </td>
+        </tr>
+        <tr *ngIf="cursos().length === 0">
+          <td colspan="5">Nenhum curso cadastrado ainda.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

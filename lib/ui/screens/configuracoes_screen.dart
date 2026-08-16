@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../core/constants/api_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../data/services/biometria_service.dart';
 import '../../providers/logistica_provider.dart';
@@ -117,10 +118,59 @@ class ConfiguracoesScreen extends StatelessWidget {
               );
             },
           ),
+          const SizedBox(height: 20),
+          const Text('Conexão (avançado)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Backend usado pelo app'),
+                  const SizedBox(height: 12),
+                  SegmentedButton<AmbienteBackend>(
+                    segments: const [
+                      ButtonSegment(
+                        value: AmbienteBackend.mock,
+                        label: Text('Mock'),
+                        icon: Icon(Icons.cloud_off_outlined),
+                      ),
+                      ButtonSegment(
+                        value: AmbienteBackend.python,
+                        label: Text('Python'),
+                        icon: Icon(Icons.cloud_outlined),
+                      ),
+                      ButtonSegment(
+                        value: AmbienteBackend.java,
+                        label: Text('Java'),
+                        icon: Icon(Icons.cloud_queue_outlined),
+                      ),
+                    ],
+                    selected: {settings.ambienteBackend},
+                    onSelectionChanged: (novo) => settings.definirAmbienteBackend(novo.first),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _descricaoAmbiente(settings.ambienteBackend),
+                    style: const TextStyle(color: AppColors.onSurfaceMuted, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
+
+  String _descricaoAmbiente(AmbienteBackend ambiente) => switch (ambiente) {
+        AmbienteBackend.mock => 'Sem backend: usa dados de demonstração salvos no app.',
+        AmbienteBackend.python =>
+          'Backend real do time (FastAPI) - cobre todas as áreas do app.',
+        AmbienteBackend.java =>
+          'Backend Spring Boot (Fase 5) - cobre login, cursos, serviços e AI Logistics.',
+      };
 
   String _rotuloFonte(double v) {
     if (v <= 0.95) return 'Pequeno';

@@ -1,0 +1,169 @@
+.cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+
+  h1 {
+    margin: 0;
+  }
+
+  .subtitulo {
+    color: #666;
+    margin: 0.25rem 0 0;
+  }
+
+  .principal {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #ff6b35;
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+  }
+}
+
+.erro {
+  color: #c0392b;
+}
+
+.formulario {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .grade {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+  }
+
+  label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 0.25rem;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font: inherit;
+    box-sizing: border-box;
+  }
+
+  .checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 400;
+    margin-top: 1.4rem;
+
+    input {
+      width: auto;
+    }
+  }
+
+  .acoes {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+
+    button {
+      padding: 0.55rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background: #ff6b35;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+
+      &.secundario {
+        background: #eee;
+        color: #333;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+.lista {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .status {
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #eee;
+
+    &.pendente { background: #eef1f7; color: #445; }
+    &.em_transito { background: #e3f2fd; color: #1565c0; }
+    &.entregue { background: #e6f7ed; color: #1e7e42; }
+    &.atrasado { background: #fde8e8; color: #c0392b; }
+  }
+
+  .risco {
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    &.baixo { background: #e6f7ed; color: #1e7e42; }
+    &.medio { background: #fff4e0; color: #a3690a; }
+    &.alto { background: #ffe8d9; color: #c0530a; }
+    &.critico { background: #fde8e8; color: #c0392b; }
+  }
+
+  .risco-vazio {
+    color: #bbb;
+  }
+
+  .acoes-linha {
+    display: flex;
+    gap: 0.4rem;
+
+    button {
+      padding: 0.35rem 0.6rem;
+      border: none;
+      border-radius: 6px;
+      background: #eee;
+      cursor: pointer;
+      font-size: 0.8rem;
+
+      &.perigo {
+        background: #fde8e8;
+        color: #c0392b;
+      }
+    }
+  }
+}

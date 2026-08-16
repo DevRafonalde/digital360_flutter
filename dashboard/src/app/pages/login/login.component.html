@@ -1,0 +1,37 @@
+<div class="login-page">
+  <form class="login-card" (ngSubmit)="entrar()" #loginForm="ngForm">
+    <img class="logo" src="favicon.ico" alt="Digital 360" />
+    <h1>Digital 360 &mdash; Painel Admin</h1>
+    <p class="subtitulo">Smart HAS · Sociedade 5.0</p>
+
+    <label for="nomeUser">Usuario</label>
+    <input
+      id="nomeUser"
+      name="nomeUser"
+      type="text"
+      [(ngModel)]="nomeUser"
+      required
+      autocomplete="username"
+      placeholder="admin"
+    />
+
+    <label for="senha">Senha</label>
+    <input
+      id="senha"
+      name="senha"
+      type="password"
+      [(ngModel)]="senha"
+      required
+      autocomplete="current-password"
+      placeholder="admin123"
+    />
+
+    <button type="submit" [disabled]="loginForm.invalid || carregando()">
+      {{ carregando() ? 'Entrando...' : 'Entrar' }}
+    </button>
+
+    <p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+    <p class="dica">Demo: admin / admin123 (gestor) ou joao / 123456 (usuario)</p>
+  </form>
+</div>
