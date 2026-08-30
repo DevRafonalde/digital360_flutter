@@ -1,0 +1,43 @@
+h1 {
+  margin: 0 0 0.25rem;
+}
+
+.subtitulo {
+  color: #666;
+  margin: 0 0 1.5rem;
+}
+
+.erro {
+  color: #c0392b;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  .valor {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+
+  .rotulo {
+    color: #777;
+    font-size: 0.85rem;
+  }
+
+  &.destaque.alerta .valor {
+    color: #c0392b;
+  }
+}

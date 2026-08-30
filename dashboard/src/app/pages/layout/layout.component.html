@@ -1,0 +1,20 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">Digital 360</div>
+    <nav>
+      <a routerLink="/home" routerLinkActive="ativo">Inicio</a>
+      <a routerLink="/cursos" routerLinkActive="ativo">Cursos</a>
+      <a routerLink="/servicos" routerLinkActive="ativo">Guia de Servicos</a>
+      <a routerLink="/pedidos" routerLinkActive="ativo">AI Logistics</a>
+    </nav>
+
+    <div class="usuario" *ngIf="authService.usuario() as usuario">
+      <span>{{ usuario.nomeAmigavel }}</span>
+      <button (click)="sair()">Sair</button>
+    </div>
+  </aside>
+
+  <main class="conteudo">
+    <router-outlet></router-outlet>
+  </main>
+</div>

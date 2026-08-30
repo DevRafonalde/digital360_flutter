@@ -1,0 +1,24 @@
+<h1>Visao geral</h1>
+<p class="subtitulo">Painel administrativo do Digital 360 &mdash; Smart HAS AI Logistics Extension</p>
+
+<p *ngIf="carregando()">Carregando...</p>
+<p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+<div class="cards" *ngIf="!carregando() && !erro()">
+  <div class="card">
+    <span class="valor">{{ totalCursos() }}</span>
+    <span class="rotulo">Trilhas de curso</span>
+  </div>
+  <div class="card">
+    <span class="valor">{{ totalServicos() }}</span>
+    <span class="rotulo">Servicos no guia</span>
+  </div>
+  <div class="card">
+    <span class="valor">{{ totalPedidos() }}</span>
+    <span class="rotulo">Pedidos monitorados</span>
+  </div>
+  <div class="card destaque" [class.alerta]="pedidosAtrasados() > 0">
+    <span class="valor">{{ pedidosAtrasados() }}</span>
+    <span class="rotulo">Pedidos atrasados</span>
+  </div>
+</div>

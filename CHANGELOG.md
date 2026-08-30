@@ -5,6 +5,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- Seletor de ambiente de backend (Mock / Python / Java) em Configurações →
+  "Conexão (avançado)" — Fase 5. Permite trocar, em tempo de execução e sem
+  recompilar, entre o modo mock, o backend Python real do time e o novo backend
+  Spring Boot (`backend-java/`), com a escolha persistida via `SharedPreferences`.
 - `AnalyticsService` (Firebase Analytics + Crashlytics), mesmo padrão defensivo já
   usado pro FCM em `NotificationService` — não verificável ponta-a-ponta neste ambiente
   (`google-services.json` é placeholder). Loga `login_realizado` e `curso_concluido` como
@@ -101,6 +105,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
   que já eram necessárias mas não estavam declaradas em lugar nenhum.
 
 ### Changed
+- `ApiConstants.useMock`/`baseUrl` deixaram de ser `const` (compile-time) e viraram
+  campos estáticos configuráveis em runtime via `ApiConstants.aplicarAmbiente()`,
+  acionado pelo novo seletor de ambiente do `SettingsProvider` — nenhum call site em
+  `ApiService` precisou mudar, já que a sintaxe de leitura (`ApiConstants.useMock`)
+  continua igual.
 - Redesign visual "Minimal Tech": paleta grafite + acento verde elétrico único, novo
   wordmark "digital360", novo ícone de app (monograma "D360").
 - CORS do backend restrito por lista explícita de origens (`ALLOWED_ORIGINS`), em vez

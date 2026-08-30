@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../core/constants/api_constants.dart';
+
 /// Preferencias de acessibilidade e aparencia (tema, tamanho de fonte).
 /// Publico-alvo do app (idosos, baixo letramento digital) se beneficia de
 /// poder ajustar esses dois pontos, entao ficam configuraveis e persistidos.
@@ -8,10 +10,12 @@ class SettingsProvider extends ChangeNotifier {
   static const _kTema = 'settings_tema'; // 'system' | 'dark' | 'light'
   static const _kFonte = 'settings_fonte_escala';
   static const _kBiometria = 'settings_biometria_ativa';
+  static const _kAmbiente = 'settings_ambiente_backend'; // 'mock' | 'python' | 'java'
 
   ThemeMode themeMode = ThemeMode.dark;
   double fontScale = 1.0; // 0.9 / 1.0 / 1.15 / 1.3
   bool biometriaAtiva = false;
+  AmbienteBackend ambienteBackend = AmbienteBackend.mock;
 
   SettingsProvider() {
     _carregar();
@@ -22,8 +26,33 @@ class SettingsProvider extends ChangeNotifier {
     themeMode = _fromString(p.getString(_kTema));
     fontScale = p.getDouble(_kFonte) ?? 1.0;
     biometriaAtiva = p.getBool(_kBiometria) ?? false;
+    ambienteBackend = _ambienteFromString(p.getString(_kAmbiente));
+    ApiConstants.aplicarAmbiente(ambienteBackend);
     notifyListeners();
   }
+
+  /// Troca o backend que o app conversa (mock / Python real / Java Fase 5).
+  /// Nao exige reiniciar o app: [ApiConstants.baseUrl] e lido a cada chamada
+  /// de rede, entao a troca vale a partir da proxima requisicao.
+  Future<void> definirAmbienteBackend(AmbienteBackend ambiente) async {
+    ambienteBackend = ambiente;
+    ApiConstants.aplicarAmbiente(ambiente);
+    notifyListeners();
+    final p = await SharedPreferences.getInstance();
+    await p.setString(_kAmbiente, _ambienteToString(ambiente));
+  }
+
+  AmbienteBackend _ambienteFromString(String? v) => switch (v) {
+        'python' => AmbienteBackend.python,
+        'java' => AmbienteBackend.java,
+        _ => AmbienteBackend.mock,
+      };
+
+  String _ambienteToString(AmbienteBackend a) => switch (a) {
+        AmbienteBackend.mock => 'mock',
+        AmbienteBackend.python => 'python',
+        AmbienteBackend.java => 'java',
+      };
 
   /// Liga/desliga a exigencia de biometria ao reabrir o app com uma sessao
   /// ja salva - nao afeta o login por usuario/senha em si.

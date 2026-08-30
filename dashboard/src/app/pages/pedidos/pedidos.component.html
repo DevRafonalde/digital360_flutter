@@ -1,0 +1,103 @@
+<div class="cabecalho">
+  <div>
+    <h1>AI Logistics Extension</h1>
+    <p class="subtitulo">Pedidos monitorados, risco de atraso e reagendamento</p>
+  </div>
+  <button class="principal" (click)="abrirFormulario()" *ngIf="!mostrarFormulario()">+ Novo pedido</button>
+</div>
+
+<p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+<form class="formulario" *ngIf="mostrarFormulario()" (ngSubmit)="salvar()" #pedidoForm="ngForm">
+  <div class="grade">
+    <div>
+      <label for="codigoPedido">Codigo</label>
+      <input id="codigoPedido" name="codigoPedido" type="text" [(ngModel)]="formulario.codigoPedido" required />
+    </div>
+    <div>
+      <label for="produto">Produto</label>
+      <input id="produto" name="produto" type="text" [(ngModel)]="formulario.produto" required />
+    </div>
+    <div>
+      <label for="tipoProduto">Tipo de produto</label>
+      <input id="tipoProduto" name="tipoProduto" type="text" [(ngModel)]="formulario.tipoProduto" required />
+    </div>
+    <div>
+      <label for="regiaoEntrega">Regiao de entrega</label>
+      <input id="regiaoEntrega" name="regiaoEntrega" type="text" [(ngModel)]="formulario.regiaoEntrega" required />
+    </div>
+    <div>
+      <label for="distanciaKm">Distancia (km)</label>
+      <input id="distanciaKm" name="distanciaKm" type="number" min="0" [(ngModel)]="formulario.distanciaKm" required />
+    </div>
+    <div>
+      <label for="prazoPrometido">Prazo prometido</label>
+      <input id="prazoPrometido" name="prazoPrometido" type="text" placeholder="dd/mm/aaaa" [(ngModel)]="formulario.prazoPrometido" required />
+    </div>
+    <div>
+      <label for="statusAtual">Status</label>
+      <select id="statusAtual" name="statusAtual" [(ngModel)]="formulario.statusAtual" required>
+        <option value="PENDENTE">Pendente</option>
+        <option value="EM_TRANSITO">Em transito</option>
+        <option value="ENTREGUE">Entregue</option>
+        <option value="ATRASADO">Atrasado</option>
+      </select>
+    </div>
+    <div>
+      <label for="parceiroLogistico">Parceiro logistico</label>
+      <input id="parceiroLogistico" name="parceiroLogistico" type="text" [(ngModel)]="formulario.parceiroLogistico" required />
+    </div>
+    <div class="checkbox">
+      <label>
+        <input name="estoqueDisponivel" type="checkbox" [(ngModel)]="formulario.estoqueDisponivel" />
+        Estoque disponivel
+      </label>
+    </div>
+  </div>
+
+  <div class="acoes">
+    <button type="submit" [disabled]="pedidoForm.invalid">Adicionar</button>
+    <button type="button" class="secundario" (click)="cancelar()">Cancelar</button>
+  </div>
+</form>
+
+<p *ngIf="carregando()">Carregando...</p>
+
+<div class="lista" *ngIf="!carregando()">
+  <table>
+    <thead>
+      <tr>
+        <th>Codigo</th>
+        <th>Produto</th>
+        <th>Regiao</th>
+        <th>Status</th>
+        <th>Risco</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let pedido of pedidos()">
+        <td>{{ pedido.codigoPedido }}</td>
+        <td>{{ pedido.produto }}</td>
+        <td>{{ pedido.regiaoEntrega }}</td>
+        <td>
+          <span class="status" [class]="pedido.statusAtual.toLowerCase()">{{ pedido.statusAtual }}</span>
+        </td>
+        <td>
+          <span *ngIf="riscoPorPedido()[pedido.id] as risco" class="risco" [class]="risco.riscoNivel.toLowerCase()">
+            {{ risco.riscoNivel }} ({{ risco.riscoScore }})
+          </span>
+          <span *ngIf="!riscoPorPedido()[pedido.id]" class="risco-vazio">&mdash;</span>
+        </td>
+        <td class="acoes-linha">
+          <button (click)="recalcularRisco(pedido)">Recalcular risco</button>
+          <button *ngIf="pedido.statusAtual === 'ATRASADO'" (click)="reagendar(pedido)">Reagendar</button>
+          <button class="perigo" (click)="remover(pedido)">Excluir</button>
+        </td>
+      </tr>
+      <tr *ngIf="pedidos().length === 0">
+        <td colspan="6">Nenhum pedido cadastrado ainda.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
