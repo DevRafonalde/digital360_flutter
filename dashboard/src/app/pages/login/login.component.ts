@@ -26,7 +26,7 @@ export class LoginComponent {
     this.erro.set(null);
     this.carregando.set(true);
 
-    this.authService.login({ nomeUser: this.nomeUser, senha: this.senha }).subscribe({
+    this.authService.login({ nomeUser: this.nomeUser, senhaUser: this.senha }).subscribe({
       next: () => {
         this.carregando.set(false);
         this.router.navigate(['/home']);

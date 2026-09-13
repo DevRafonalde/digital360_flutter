@@ -1,0 +1,51 @@
+.cabecalho {
+  margin-bottom: 1rem;
+
+  h1 {
+    margin: 0;
+  }
+
+  .subtitulo {
+    color: #666;
+    margin: 0.25rem 0 0;
+  }
+}
+
+.erro {
+  color: #c0392b;
+}
+
+.lista {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.6rem 0.4rem;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+  }
+
+  .situacao {
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: #eef1f7;
+    color: #445;
+
+    &.alta {
+      background: #fff4e0;
+      color: #a3690a;
+    }
+  }
+}

@@ -56,11 +56,12 @@ alimentar o app mobile."
 
 ## 4:30 – 4:50 | Limitacoes e proximos passos
 **Tela:** slide 9.
-**Fala:** "O escopo deste back-end Java cobre o nucleo do dominio, autenticacao, cursos,
-servicos e AI Logistics, de proposito: os recursos mais recentes do app, como comunidade
-e gamificacao, continuam no back-end Python do time. O proximo passo natural e decidir,
-como grupo, se convergimos os dois back-ends ou se eles seguem servindo publicos
-diferentes."
+**Fala:** "Sobre honestidade tecnica: o backend Java cobre hoje o contrato inteiro do
+app, os 33 endpoints, incluindo comunidade, gamificacao, cuidador e recomendacoes, nao
+ficou restrito so ao nucleo de AI Logistics. Ele nao substitui o backend Python do
+time, e uma implementacao paralela e completa em Java. Dois bugs reais apareceram e
+foram corrigidos durante essa validacao. O proximo passo natural e decidir, como grupo,
+se convergimos os dois back-ends ou se eles seguem servindo propositos diferentes."
 
 ## 4:50 – 5:00 | Encerramento
 **Tela:** slide 10.

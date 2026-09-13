@@ -1,0 +1,41 @@
+<div class="cabecalho">
+  <div>
+    <h1>Tendencias</h1>
+    <p class="subtitulo">Deteccao de picos de uso por categoria (media movel de 7 dias)</p>
+  </div>
+</div>
+
+<p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+<p *ngIf="carregando()">Carregando...</p>
+
+<div class="lista" *ngIf="!carregando()">
+  <table>
+    <thead>
+      <tr>
+        <th>Categoria</th>
+        <th>Volume (7 dias)</th>
+        <th>Media historica diaria</th>
+        <th>Situacao</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tendencia of tendencias()">
+        <td>{{ tendencia.categoria }}</td>
+        <td>{{ tendencia.volumeUltimos7Dias }}</td>
+        <td>{{ tendencia.mediaHistoricaDiaria | number: '1.1-1' }}</td>
+        <td>
+          <span class="situacao" [class.alta]="tendencia.emAlta">
+            {{ tendencia.emAlta ? 'Em alta' : 'Estavel' }}
+          </span>
+        </td>
+      </tr>
+      <tr *ngIf="tendencias().length === 0">
+        <td colspan="4">
+          Nenhum pico de demanda detectado ainda. As tendencias aparecem aqui assim que
+          o volume de uso por categoria for suficiente para a analise de sazonalidade.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

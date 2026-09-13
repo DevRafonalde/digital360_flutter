@@ -23,6 +23,14 @@ class MockData {
           cargaHoraria: 4,
           totalModulos: 6,
           progresso: 75,
+          topicosModulos: const [
+            'Ligando e desligando o celular',
+            'Conhecendo a tela inicial',
+            'Conectando ao Wi-Fi',
+            'Fazendo e recebendo chamadas',
+            'Enviando mensagens de texto',
+            'Cuidando da bateria e da segurança do aparelho',
+          ],
         ),
         Curso(
           id: 2,
@@ -32,6 +40,16 @@ class MockData {
           cargaHoraria: 6,
           totalModulos: 8,
           progresso: 30,
+          topicosModulos: const [
+            'O que é o gov.br e para que serve',
+            'Criando sua conta gov.br',
+            'Fazendo login com CPF e senha',
+            'Consultando seus benefícios do INSS',
+            'Agendando atendimento no INSS',
+            'Emitindo documentos (CPF, CNH digital)',
+            'Acompanhando protocolos e solicitações',
+            'Pedindo ajuda quando algo não funciona',
+          ],
         ),
         Curso(
           id: 3,
@@ -41,6 +59,15 @@ class MockData {
           cargaHoraria: 5,
           totalModulos: 7,
           progresso: 0,
+          topicosModulos: const [
+            'Como reconhecer uma mensagem falsa',
+            'O golpe do falso parente em emergência',
+            'Cuidado com links e QR codes desconhecidos',
+            'Protegendo sua senha e seus dados pessoais',
+            'O golpe do falso funcionário do banco',
+            'Verificando se um site é seguro',
+            'O que fazer se você caiu em um golpe',
+          ],
         ),
         Curso(
           id: 4,
@@ -50,8 +77,163 @@ class MockData {
           cargaHoraria: 8,
           totalModulos: 10,
           progresso: 10,
+          topicosModulos: const [
+            'O que é o Pix e como ele funciona',
+            'Cadastrando sua chave Pix',
+            'Fazendo seu primeiro Pix',
+            'Recebendo dinheiro por Pix',
+            'Conferindo o comprovante da transação',
+            'Cuidados antes de confirmar um pagamento',
+            'Golpes comuns envolvendo o Pix',
+            'Pagando contas e boletos pelo celular',
+            'Usando cartão de débito e crédito com segurança',
+            'O que fazer se você caiu em um golpe com Pix',
+          ],
         ),
       ];
+
+  /// Conteudo didatico de cada modulo, por curso e por titulo do topico -
+  /// texto curto e direto, pensado pro publico com baixo letramento digital
+  /// (frases curtas, linguagem simples, tom encorajador).
+  static String conteudoModulo(int cursoId, String topico) {
+    return _conteudosModulos[cursoId]?[topico] ??
+        'Conteúdo deste módulo em preparação. Toque em "Concluir módulo" para avançar mesmo assim.';
+  }
+
+  static final Map<int, Map<String, String>> _conteudosModulos = {
+    1: {
+      'Ligando e desligando o celular':
+          'Para ligar, segure o botão lateral por alguns segundos até a tela acender. '
+          'Para desligar, segure o mesmo botão e toque em "Desligar" na tela que aparecer. '
+          'Se o celular travar, segure o botão por mais tempo até ele reiniciar sozinho.',
+      'Conhecendo a tela inicial':
+          'Na tela inicial ficam os ícones dos aplicativos (os "quadradinhos" com desenhos). '
+          'Toque uma vez com o dedo para abrir um aplicativo. '
+          'O botão de "voltar" ou o gesto de deslizar da borda ajuda a sair de onde você está.',
+      'Conectando ao Wi-Fi':
+          'Vá em Configurações e toque em "Wi-Fi". '
+          'Escolha o nome da sua rede na lista e digite a senha quando pedir. '
+          'Uma vez conectado, o celular lembra a senha e conecta sozinho da próxima vez.',
+      'Fazendo e recebendo chamadas':
+          'Abra o aplicativo de telefone (ícone de um telefone verde) e toque no contato ou digite o número. '
+          'Para atender uma ligação, deslize o círculo verde. Para recusar, deslize o vermelho. '
+          'Você pode aumentar o volume da chamada com os botões na lateral do celular.',
+      'Enviando mensagens de texto':
+          'Abra o aplicativo de mensagens ou o WhatsApp e toque no contato desejado. '
+          'Digite o texto no campo de baixo e toque na seta para enviar. '
+          'Você também pode gravar um áudio segurando o ícone do microfone, se preferir falar em vez de digitar.',
+      'Cuidando da bateria e da segurança do aparelho':
+          'Carregue o celular sempre que possível, sem esperar chegar a 0%. '
+          'Configure uma senha ou desenho de desbloqueio em Configurações para proteger seus dados. '
+          'Evite emprestar o celular desbloqueado e nunca compartilhe sua senha com estranhos.',
+    },
+    2: {
+      'O que é o gov.br e para que serve':
+          'O gov.br é o portal único do governo para acessar serviços públicos pela internet. '
+          'Por ele dá para consultar benefícios do INSS, tirar documentos e agendar atendimentos, sem sair de casa. '
+          'Ter uma conta gov.br é como ter uma "chave" que abre vários serviços do governo de uma vez.',
+      'Criando sua conta gov.br':
+          'Acesse o site ou app gov.br e toque em "Criar conta". '
+          'Informe seu CPF e alguns dados pessoais para confirmar quem você é. '
+          'Guarde a senha escolhida em um lugar seguro — ela será usada em todos os serviços do governo.',
+      'Fazendo login com CPF e senha':
+          'Na tela de entrada, digite seu CPF e a senha cadastrada. '
+          'Se esquecer a senha, toque em "Esqueci minha senha" para criar uma nova. '
+          'Nunca digite sua senha do gov.br em links recebidos por mensagem — só no site ou app oficial.',
+      'Consultando seus benefícios do INSS':
+          'Dentro do gov.br, procure por "Meu INSS". '
+          'Lá você vê o valor do seu benefício, a data do próximo pagamento e o extrato de pagamentos anteriores. '
+          'Também dá para saber se algum documento está pendente de envio.',
+      'Agendando atendimento no INSS':
+          'No Meu INSS, toque em "Agendamentos" e escolha o serviço que precisa. '
+          'Selecione a agência mais perto de você e o melhor dia e horário disponíveis. '
+          'Você recebe a confirmação na tela e pode consultar de novo sempre que quiser.',
+      'Emitindo documentos (CPF, CNH digital)':
+          'O gov.br permite ver e baixar documentos digitais, como CPF e CNH. '
+          'Procure pelo nome do documento na busca do aplicativo. '
+          'O documento digital tem a mesma validade do documento físico e pode ser mostrado direto no celular.',
+      'Acompanhando protocolos e solicitações':
+          'Todo pedido feito no gov.br gera um número de protocolo. '
+          'Guarde esse número — com ele dá para consultar o andamento do seu pedido a qualquer momento. '
+          'Em "Meus pedidos" ficam listadas todas as solicitações que você já fez.',
+      'Pedindo ajuda quando algo não funciona':
+          'Se algo não funcionar, o próprio gov.br tem uma "Central de Atendimento" com perguntas frequentes. '
+          'Você também pode ligar para o telefone 135 (INSS) para falar com uma pessoa de verdade. '
+          'Nunca pague para "agilizar" um serviço público — esses serviços são sempre gratuitos.',
+    },
+    3: {
+      'Como reconhecer uma mensagem falsa':
+          'Desconfie de mensagens com erros de português, urgência exagerada ou promessas boas demais. '
+          'Bancos e órgãos públicos nunca pedem senha ou código por mensagem. '
+          'Na dúvida, não responda nem clique em nada — ligue direto para o número oficial da empresa.',
+      'O golpe do falso parente em emergência':
+          'É comum receber uma mensagem dizendo ser um filho ou neto "com o número novo", pedindo dinheiro com urgência. '
+          'Antes de fazer qualquer pagamento, ligue para a pessoa no número antigo que você já conhece. '
+          'Combine com a família uma "palavra secreta" para confirmar pedidos de emergência.',
+      'Cuidado com links e QR codes desconhecidos':
+          'Não clique em links recebidos de números desconhecidos, mesmo que pareçam de bancos ou lojas. '
+          'QR codes também podem levar a páginas falsas — só escaneie os que você mesmo gerou ou reconhece a origem. '
+          'Se tiver dúvida sobre um link, apague a mensagem sem abrir.',
+      'Protegendo sua senha e seus dados pessoais':
+          'Nunca compartilhe suas senhas, mesmo com quem diz ser "do banco" ou "do governo". '
+          'Use senhas diferentes para aplicativos diferentes, se possível. '
+          'Guarde documentos como CPF e RG apenas em locais seguros, sem tirar foto e enviar por mensagem sem necessidade.',
+      'O golpe do falso funcionário do banco':
+          'Golpistas ligam se passando por funcionários do banco, avisando de uma "compra suspeita". '
+          'O banco de verdade nunca pede para você transferir dinheiro para uma "conta segura". '
+          'Desconfie e desligue — depois ligue você mesmo para o número oficial do banco, escrito no cartão.',
+      'Verificando se um site é seguro':
+          'Sites seguros começam com "https://" e mostram um cadeado ao lado do endereço. '
+          'Confira se o nome do site está escrito corretamente, sem letras trocadas. '
+          'Evite fazer compras ou digitar dados pessoais em sites que você não conhece.',
+      'O que fazer se você caiu em um golpe':
+          'Não sinta vergonha — isso acontece com muita gente e quanto mais rápido agir, melhor. '
+          'Ligue imediatamente para o seu banco para bloquear a conta ou o cartão. '
+          'Registre um Boletim de Ocorrência (pode ser feito online) e avise seus familiares.',
+    },
+    4: {
+      'O que é o Pix e como ele funciona':
+          'O Pix é uma forma de transferir dinheiro na hora, a qualquer horário, sem taxa para pessoas físicas. '
+          'Funciona pelo aplicativo do seu banco, usando uma "chave" que identifica a conta de destino. '
+          'É mais rápido que TED ou DOC e funciona todos os dias, inclusive fins de semana.',
+      'Cadastrando sua chave Pix':
+          'No aplicativo do banco, procure por "Pix" e depois "Minhas chaves". '
+          'Você pode cadastrar seu CPF, e-mail, celular ou uma chave aleatória. '
+          'Escolha uma chave fácil de lembrar para quem for te enviar dinheiro, como o celular.',
+      'Fazendo seu primeiro Pix':
+          'No app do banco, toque em "Pix" e depois em "Transferir". '
+          'Digite a chave da pessoa que vai receber, confira o nome que aparece na tela e o valor. '
+          'Sempre confira o nome antes de confirmar — se o nome não bater, cancele a operação.',
+      'Recebendo dinheiro por Pix':
+          'Para receber, basta informar sua chave Pix (CPF, celular, e-mail) para quem vai te pagar. '
+          'O dinheiro cai na sua conta em poucos segundos. '
+          'Você recebe uma notificação no celular confirmando o recebimento.',
+      'Conferindo o comprovante da transação':
+          'Depois de qualquer Pix, o aplicativo gera um comprovante. '
+          'Guarde ou tire print desse comprovante, principalmente em compras. '
+          'O comprovante mostra data, valor e para quem foi feita a transferência.',
+      'Cuidados antes de confirmar um pagamento':
+          'Sempre confira o nome de quem vai receber antes de tocar em "Confirmar". '
+          'Desconfie se alguém pedir pressa para você fazer o Pix. '
+          'Uma vez confirmado, o Pix não tem como ser cancelado — por isso, confira com calma antes.',
+      'Golpes comuns envolvendo o Pix':
+          'Desconfie de vendedores que só aceitam Pix e pedem pagamento antecipado sem nota fiscal. '
+          'Golpistas também criam QR codes falsos — confira sempre o valor antes de pagar. '
+          'Nunca faça um Pix "para desbloquear um prêmio" ou "liberar uma encomenda".',
+      'Pagando contas e boletos pelo celular':
+          'No app do banco, toque em "Pagar" e depois em "Ler código de barras" ou digite o número do boleto. '
+          'Confira o valor e a data de vencimento antes de confirmar o pagamento. '
+          'Guarde o comprovante até ter certeza de que o pagamento foi reconhecido.',
+      'Usando cartão de débito e crédito com segurança':
+          'Cubra o teclado com a mão ao digitar a senha do cartão em maquininhas. '
+          'Ative notificações de compra no aplicativo do banco para saber na hora se algo for cobrado. '
+          'Nunca entregue seu cartão para "ajuda" de estranhos, mesmo em caixas eletrônicos.',
+      'O que fazer se você caiu em um golpe com Pix':
+          'Ligue imediatamente para o seu banco — existe um mecanismo chamado "Pix Alto" que pode bloquear o dinheiro em até 24h. '
+          'Quanto mais rápido avisar, maior a chance de recuperar o valor. '
+          'Depois, registre um Boletim de Ocorrência e guarde os comprovantes da conversa com o golpista.',
+    },
+  };
 
   /// Espelha heuristics.py::gerar_rascunho_curso do backend real - mesmo
   /// template por regra fixa (NAO IA generativa), pro modo mock e o modo
@@ -131,6 +313,26 @@ class MockData {
           conteudo:
               'Use o app Bolsa Família ou Caixa Tem para consultar o '
               'calendário de pagamentos e o valor do seu benefício.',
+        ),
+        Servico(
+          id: 5,
+          titulo: 'Conheça seus direitos: Estatuto do Idoso',
+          descricao: 'Direitos garantidos por lei a quem tem 60 anos ou mais.',
+          categoria: 'Direitos e Cidadania',
+          orgao: 'Governo Federal',
+          conteudo:
+              'O Estatuto do Idoso (Lei nº 10.741/2003) garante, entre outros direitos:\n\n'
+              '• Atendimento preferencial em bancos, comércio, órgãos públicos e filas em geral;\n'
+              '• Gratuidade no transporte coletivo público urbano para quem tem 65 anos ou mais '
+              '(basta apresentar um documento com foto);\n'
+              '• Desconto de pelo menos 50% em eventos de cultura, esporte e lazer para quem tem '
+              '60 anos ou mais;\n'
+              '• Vagas reservadas de estacionamento e assentos preferenciais em transportes e locais públicos;\n'
+              '• Prioridade na tramitação de processos judiciais e administrativos;\n'
+              '• Proteção contra negligência, abandono, violência e discriminação — isso é crime '
+              'previsto em lei.\n\n'
+              'Se você ou alguém que conhece sofrer maus-tratos, ligue gratuitamente para o '
+              'Disque 100 (Direitos Humanos), disponível 24 horas por dia, todos os dias.',
         ),
       ];
 

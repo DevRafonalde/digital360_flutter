@@ -108,6 +108,28 @@ def test_recomendar_com_historico_da_bonus_de_novidade():
     # nunca visitados devem pontuar por novidade/descoberta e aparecer no topo.
     top_ids = [(r["tipo"], r["id"]) for r in resultado]
     assert ("curso", 1) not in top_ids[:1]
+    # so 1 usuario nos eventos: sem par pra comparar, o sinal colaborativo nao
+    # deve aparecer - garante que nao ha "ML fingido" sem dado de verdade.
+    assert all(r["origemScore"] == "heuristico" for r in resultado)
+
+
+def test_recomendar_usa_filtragem_colaborativa_quando_ha_coocorrencia_entre_usuarios():
+    """ML real: se outro usuario (u2) interage bastante com os cursos 3 e 4
+    juntos, o curso 4 deve ganhar um sinal colaborativo pra quem (u1) so
+    interagiu com o curso 3 ate agora - similaridade de cosseno item-a-item,
+    nao regra fixa."""
+    agora = datetime.now(timezone.utc)
+    eventos = [
+        {"userId": "u1", "tipo": "curso", "referenceId": 3, "timestamp": agora - timedelta(days=1)},
+        {"userId": "u2", "tipo": "curso", "referenceId": 3, "timestamp": agora - timedelta(days=2)},
+        {"userId": "u2", "tipo": "curso", "referenceId": 3, "timestamp": agora - timedelta(days=2)},
+        {"userId": "u2", "tipo": "curso", "referenceId": 4, "timestamp": agora - timedelta(days=2)},
+        {"userId": "u2", "tipo": "curso", "referenceId": 4, "timestamp": agora - timedelta(days=2)},
+    ]
+    resultado = recomendar("u1", eventos)
+    curso_4 = next(r for r in resultado if r["tipo"] == "curso" and r["id"] == 4)
+    assert curso_4["origemScore"] == "colaborativo"
+    assert curso_4["score"] > 0
 
 
 def test_detectar_tendencias_sinaliza_pico_de_categoria():

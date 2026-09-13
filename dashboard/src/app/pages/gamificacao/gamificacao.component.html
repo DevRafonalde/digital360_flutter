@@ -1,0 +1,39 @@
+<div class="cabecalho">
+  <div>
+    <h1>Gamificacao</h1>
+    <p class="subtitulo">Ranking dos usuarios por cursos concluidos, sequencia e pontos</p>
+  </div>
+</div>
+
+<p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+<p *ngIf="carregando()">Carregando...</p>
+
+<div class="lista" *ngIf="!carregando()">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Usuario</th>
+        <th>Cursos concluidos</th>
+        <th>Sequencia (dias)</th>
+        <th>Pontos</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of ranking(); let posicao = index">
+        <td>{{ posicao + 1 }}</td>
+        <td>{{ item.nomeAmigavel }}</td>
+        <td>{{ item.cursosConcluidos }}</td>
+        <td>{{ item.sequenciaDias }}</td>
+        <td>{{ item.pontos }}</td>
+      </tr>
+      <tr *ngIf="ranking().length === 0">
+        <td colspan="5">
+          Ninguem no ranking ainda. Assim que usuarios concluirem cursos e acumularem
+          pontos, o ranking aparece aqui.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

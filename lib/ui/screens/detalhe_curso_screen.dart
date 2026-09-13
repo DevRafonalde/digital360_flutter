@@ -10,6 +10,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/cursos_provider.dart';
 import '../widgets/libras_video_placeholder.dart';
 import '../widgets/risk_badge.dart';
+import 'licao_modulo_screen.dart';
 import 'tutor_perfil_screen.dart';
 
 class DetalheCursoScreen extends StatefulWidget {
@@ -220,6 +221,13 @@ class _DetalheCursoScreenState extends State<DetalheCursoScreen> {
               label: const Text('Baixar certificado (PDF)'),
             ),
           ],
+          if (curso.topicosModulos.isNotEmpty) ...[
+            const SizedBox(height: 32),
+            const Text('Módulos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 8),
+            for (var i = 0; i < curso.topicosModulos.length; i++)
+              _linhaModulo(curso, i),
+          ],
           const SizedBox(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -316,6 +324,36 @@ class _DetalheCursoScreenState extends State<DetalheCursoScreen> {
             label: const Text('Certificado'),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _linhaModulo(Curso curso, int indice) {
+    final modulosConcluidos =
+        (curso.progresso * curso.totalModulos / 100).floor().clamp(0, curso.totalModulos);
+    final concluido = indice < modulosConcluidos;
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      child: ListTile(
+        leading: Icon(
+          concluido ? Icons.check_circle : Icons.play_circle_outline,
+          color: concluido ? AppColors.secondary : AppColors.onSurfaceMuted,
+        ),
+        title: Text(curso.topicosModulos[indice]),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => LicaoModuloScreen(
+              cursoId: curso.id,
+              titulo: curso.topicosModulos[indice],
+              indice: indice,
+              totalModulos: curso.totalModulos,
+              jaConcluido: concluido,
+              onConcluir: () => context.read<CursosProvider>().avancar(curso.id),
+            ),
+          ),
+        ),
       ),
     );
   }

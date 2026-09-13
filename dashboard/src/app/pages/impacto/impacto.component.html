@@ -1,0 +1,36 @@
+<div class="cabecalho">
+  <div>
+    <h1>Painel de impacto</h1>
+    <p class="subtitulo">Números agregados da base atual — visão para o parceiro (Leroy Merlin)</p>
+  </div>
+</div>
+
+<p class="erro" *ngIf="erro()">{{ erro() }}</p>
+
+<p *ngIf="carregando()">Carregando...</p>
+
+<div *ngIf="!carregando() && metricas() as m">
+  <div class="grade">
+    <div class="stat">
+      <span class="valor">{{ m.totalUsuarios }}</span>
+      <span class="rotulo">Usuários cadastrados</span>
+    </div>
+    <div class="stat destaque">
+      <span class="valor">{{ m.totalCursosConcluidos }}</span>
+      <span class="rotulo">Cursos concluídos</span>
+    </div>
+    <div class="stat">
+      <span class="valor">{{ m.totalCursosPublicados }}</span>
+      <span class="rotulo">Cursos publicados</span>
+    </div>
+    <div class="stat">
+      <span class="valor">{{ m.totalCursosComunidade }}</span>
+      <span class="rotulo">Criados pela comunidade</span>
+    </div>
+    <div class="stat">
+      <span class="valor">{{ m.totalPerguntasForum }}</span>
+      <span class="rotulo">Perguntas no fórum</span>
+    </div>
+  </div>
+  <p class="observacao">{{ m.observacao }}</p>
+</div>
