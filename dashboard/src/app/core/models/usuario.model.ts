@@ -8,5 +8,5 @@ export interface Usuario {
 
 export interface LoginRequest {
   nomeUser: string;
-  senha: string;
+  senhaUser: string;
 }

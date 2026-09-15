@@ -1,9 +1,15 @@
-"""Motores heuristicos da AI Logistics Extension.
+"""Motores heuristicos e de ML da AI Logistics Extension.
 
-MVP deliberadamente baseado em regras (nao em ML) - decisao tomada na mentoria
-Leroy Merlin ("comece simples, escale com consistencia"). A evolucao planejada
-para modelos treinados com dados reais fica descrita no README, e nao e
-simulada aqui com bibliotecas de ML que nao estariam de fato aprendendo nada.
+Risco, tendencias, assistente e gamificacao seguem deliberadamente baseados em
+regras - decisao tomada na mentoria Leroy Merlin ("comece simples, escale com
+consistencia"), adequada a decisoes que precisam ser auditaveis/explicaveis.
+
+O motor de recomendacao (`recomendar`) evoluiu de heuristica pura para um
+hibrido com filtragem colaborativa item-a-item real (similaridade de
+cosseno sobre coocorrencia de uso entre usuarios) - ver docstring de
+`recomendar` para os detalhes de quando cada sinal e usado. Continuamos sem
+simular aprendizado onde nao ha dado: o sinal colaborativo so entra quando ha
+eventos de mais de um usuario para comparar.
 """
 from __future__ import annotations
 
@@ -100,13 +106,63 @@ def responder_assistente(pedido: dict[str, Any] | None, pergunta: str) -> dict[s
     }
 
 
-def recomendar(user_id: str, eventos: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Rankeia o catalogo por: frequencia de acesso recente (7 dias) do
-    usuario + novidade (nao visitado ha mais de 14 dias) + leve prioridade
-    para o nivel BASICO em cold-start (usuario sem historico).
+def _similaridade_cosseno(vetor_a: dict[str, float], vetor_b: dict[str, float]) -> float:
+    """Cosseno entre dois vetores esparsos (dict usuario->peso). Pura Python,
+    sem numpy/scikit-learn - mesma filosofia do resto do modulo: manter o MVP
+    simples de instalar e auditar, sem trocar uma dependencia pesada por uma
+    tecnica que da pra implementar em poucas linhas."""
+    chaves_comuns = set(vetor_a) & set(vetor_b)
+    if not chaves_comuns:
+        return 0.0
+    produto_escalar = sum(vetor_a[k] * vetor_b[k] for k in chaves_comuns)
+    norma_a = sum(v * v for v in vetor_a.values()) ** 0.5
+    norma_b = sum(v * v for v in vetor_b.values()) ** 0.5
+    if norma_a == 0 or norma_b == 0:
+        return 0.0
+    return produto_escalar / (norma_a * norma_b)
 
-    Espelha a descricao do motor heuristico dos documentos anteriores do
-    projeto: "rankeamento por frequencia + nivel + recencia"."""
+
+def _similares_por_item(eventos: list[dict[str, Any]]) -> dict[tuple[str, int], dict[tuple[str, int], float]]:
+    """Filtragem colaborativa item-a-item: para cada par de itens, calcula a
+    similaridade de cosseno entre os vetores de interacao por usuario (quantas
+    vezes cada usuario interagiu com cada item). Isso e ML de verdade (a
+    tecnica classica de "quem viu X tambem viu Y"), nao uma regra fixa -
+    mas so tem sinal real quando existem MULTIPLOS usuarios com itens em
+    comum nos eventos; com um so usuario a matriz nao tem o que comparar e a
+    funcao devolve vazio (ver `recomendar`, que ai cai 100% na heuristica de
+    frequencia/novidade - nao ha ML fingido preenchendo a lacuna)."""
+    vetores_por_item: dict[tuple[str, int], dict[str, float]] = {}
+    for ev in eventos:
+        chave_item = (ev["tipo"], ev["referenceId"])
+        vetores_por_item.setdefault(chave_item, {})
+        vetores_por_item[chave_item][ev["userId"]] = vetores_por_item[chave_item].get(ev["userId"], 0.0) + 1.0
+
+    itens = list(vetores_por_item.keys())
+    similares: dict[tuple[str, int], dict[tuple[str, int], float]] = {i: {} for i in itens}
+    for idx_a, item_a in enumerate(itens):
+        for item_b in itens[idx_a + 1:]:
+            sim = _similaridade_cosseno(vetores_por_item[item_a], vetores_por_item[item_b])
+            if sim > 0:
+                similares[item_a][item_b] = sim
+                similares[item_b][item_a] = sim
+    return similares
+
+
+def recomendar(user_id: str, eventos: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Combina duas fontes de sinal, nessa ordem de prioridade:
+
+    1. Filtragem colaborativa item-a-item (ML real - similaridade de cosseno
+       sobre coocorrencia de uso entre usuarios), quando ha dado de OUTROS
+       usuarios que se sobreponha ao historico do usuario atual;
+    2. Heuristica de frequencia + novidade (nao visitado ha mais de 14 dias)
+       + leve prioridade a nivel BASICO em cold-start, sempre calculada como
+       base e como fallback honesto quando (1) nao tem sinal - a maioria dos
+       ambientes de demonstracao, ja que a base de eventos ainda e pequena.
+
+    Isto documenta a evolucao descrita nos relatorios anteriores do grupo
+    ("heuristica no MVP, ML real quando houver dado de uso suficiente") sem
+    fingir aprendizado onde nao ha dado: o bonus colaborativo so aparece
+    quando existe de fato coocorrencia entre usuarios nos eventos recebidos."""
     agora = datetime.now(timezone.utc)
     eventos_usuario = [e for e in eventos if e["userId"] == user_id]
 
@@ -131,6 +187,10 @@ def recomendar(user_id: str, eventos: list[dict[str, Any]]) -> list[dict[str, An
         if chave not in ultima_visita or ts > ultima_visita[chave]:
             ultima_visita[chave] = ts
 
+    # Sinal colaborativo (ML): so calcula quando ha eventos de outros usuarios.
+    outros_usuarios = {e["userId"] for e in eventos} - {user_id}
+    similares = _similares_por_item(eventos) if outros_usuarios else {}
+
     scored = []
     for item in CATALOGO:
         chave = (item["tipo"], item["id"])
@@ -144,7 +204,21 @@ def recomendar(user_id: str, eventos: list[dict[str, Any]]) -> list[dict[str, An
         if visitado_em is None:
             score += 10  # nunca visitado - potencial de descoberta
 
-        scored.append({**item, "score": score, "diasDesdeUltimaVisita": dias_desde_visita})
+        score_colaborativo = 0.0
+        if similares:
+            # soma da similaridade com cada item que o usuario ja interagiu,
+            # ponderada pela frequencia dele naquele item - quanto mais o
+            # usuario usou um item, mais peso os "vizinhos" dele ganham.
+            for chave_visitada, freq_visitada in frequencia.items():
+                score_colaborativo += similares.get(chave_visitada, {}).get(chave, 0.0) * freq_visitada
+        score += score_colaborativo * 15  # escala pro mesmo patamar da heuristica
+
+        scored.append({
+            **item,
+            "score": round(score, 2),
+            "diasDesdeUltimaVisita": dias_desde_visita,
+            "origemScore": "colaborativo" if score_colaborativo > 0 else "heuristico",
+        })
 
     scored.sort(key=lambda it: it["score"], reverse=True)
     return scored[:3]

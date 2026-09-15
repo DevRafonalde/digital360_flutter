@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/cursos_provider.dart';
 import '../../data/services/notification_service.dart';
+import '../../data/services/api_service.dart';
 import 'assistente_screen.dart';
 import 'conquistas_screen.dart';
 import 'forum_screen.dart';
@@ -21,13 +22,31 @@ class InicioTab extends StatefulWidget {
 }
 
 class _InicioTabState extends State<InicioTab> {
+  int? _cursosConcluidosComunidade;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final auth = context.read<AuthProvider>();
       context.read<CursosProvider>().carregar(auth.usuario?.bearer ?? '');
+      _carregarImpactoColetivo(auth.usuario?.bearer ?? '');
     });
+  }
+
+  /// Indicador publico rapido, sem nenhum dado pessoal - so o agregado da
+  /// base atual (mesmo dado do Painel de Impacto, so em destaque aqui pra
+  /// nao depender de o usuario navegar ate la pra ver).
+  Future<void> _carregarImpactoColetivo(String bearer) async {
+    try {
+      final metricas = await ApiService.instance.getMetricasImpacto(bearer);
+      if (!mounted) return;
+      setState(() {
+        _cursosConcluidosComunidade = (metricas['totalCursosConcluidos'] as num?)?.toInt();
+      });
+    } catch (_) {
+      // indicador e um extra informativo - falha silenciosa, sem poluir a tela inicial
+    }
   }
 
   @override
@@ -77,6 +96,43 @@ class _InicioTabState extends State<InicioTab> {
             ),
           ),
         ),
+        if (_cursosConcluidosComunidade != null) ...[
+          const SizedBox(height: 12),
+          InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const ImpactoScreen())),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.groups_outlined, color: AppColors.primary),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text.rich(
+                      TextSpan(
+                        style: const TextStyle(color: AppColors.onSurface, fontSize: 13),
+                        children: [
+                          TextSpan(
+                            text: '$_cursosConcluidosComunidade cursos ',
+                            style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
+                          ),
+                          const TextSpan(text: 'já foram concluídos na comunidade Digital 360'),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right, color: AppColors.onSurfaceMuted, size: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
         const Text('Atalhos', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 12),

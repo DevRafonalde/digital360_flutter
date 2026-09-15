@@ -1,0 +1,54 @@
+.cabecalho {
+  margin-bottom: 1rem;
+
+  h1 {
+    margin: 0;
+  }
+
+  .subtitulo {
+    color: #666;
+    margin: 0.25rem 0 0;
+  }
+}
+
+.erro {
+  color: #c0392b;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.stat {
+  background: #fff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  .valor {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+  }
+
+  .rotulo {
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  &.destaque .valor {
+    color: #ff6b35;
+  }
+}
+
+.observacao {
+  margin-top: 1.25rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #888;
+}
