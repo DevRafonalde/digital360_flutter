@@ -14,6 +14,10 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
   JDBC (`CallableStatement`), pool Oracle próprio (não interfere no H2/JPA da Fase 5),
   erros `ORA-2000x` traduzidos para HTTP 404/400 pelo `GlobalExceptionHandler` e testes
   JUnit/Mockito. Desligado por padrão (`ORACLE_ENABLED=false`).
+
+### Fixed
+- `GlobalExceptionHandler`: rota inexistente (`NoResourceFoundException`) agora devolve 404
+  em vez de cair no handler genérico e virar 500.
 - Seletor de ambiente de backend (Mock / Python / Java) em Configurações →
   "Conexão (avançado)" — Fase 5. Permite trocar, em tempo de execução e sem
   recompilar, entre o modo mock, o backend Python real do time e o novo backend

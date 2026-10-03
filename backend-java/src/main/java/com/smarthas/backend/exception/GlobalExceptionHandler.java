@@ -8,6 +8,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +42,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleCorpoInvalido(HttpMessageNotReadableException ex) {
         return build(HttpStatus.BAD_REQUEST, List.of("Corpo da requisicao invalido ou malformado"));
+    }
+
+    /** Rota inexistente (ex.: /oracle/** com ORACLE_ENABLED=false) devolve 404, nao 500. */
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleRotaInexistente(NoResourceFoundException ex) {
+        return build(HttpStatus.NOT_FOUND, List.of("Rota nao encontrada: /" + ex.getResourcePath()));
     }
 
     @ExceptionHandler(Exception.class)
