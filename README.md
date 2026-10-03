@@ -21,6 +21,18 @@ existiam mockados no app (recomendação, risco, assistente, detecção de sazon
 reagendamento, feedback, renovação de sessão). Ver [`backend/README.md`](backend/README.md)
 para detalhes e testes.
 
+## Fase 6 — Banco de Dados na Sociedade 5.0 (Oracle PL/SQL)
+
+| Item | Onde está |
+|---|---|
+| Modelo Oracle (11 tabelas), dados simulados, DER | [`database-oracle/`](database-oracle/) (`01_ddl_tabelas.sql`, `02_dados_simulados.sql`, `DER_SmartHAS_Fase6.png`) |
+| 4 functions e 3 procedures PL/SQL + testes de uso | `database-oracle/03_functions.sql`, `04_procedures.sql`, `05_testes_e_consultas.sql` |
+| Integração REST → Java → JDBC → Oracle | `backend-java/src/main/java/com/smarthas/backend/plsql/` (endpoints `/oracle/**`, ligados com `ORACLE_ENABLED=true`) |
+| Documentação, slides, roteiro do vídeo e evidências | [`docs/fase6/`](docs/fase6/) |
+| Teste completo no Docker (Oracle + scripts + `mvn test` + endpoints) | `database-oracle/testar_no_docker.ps1` |
+
+Sem `ORACLE_ENABLED=true`, o `backend-java` sobe exatamente como na Fase 5 (só H2).
+
 ## Funcionalidades
 
 | Área | O que tem |

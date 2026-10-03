@@ -1,0 +1,170 @@
+### POST /auth/usuarios/login (admin) -> token obtido: True
+
+### GET /pedidos (Fase 5, H2 - regressao)
+HTTP/1.1 200 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:24 GMT
+
+[{"id":1,"codigoPedido":"LM-2026-0001","produto":"Kit ferramentas basicas","tipoProduto":"Ferramentas","regiaoEntrega":"Sao Paulo - Centro","distanciaKm":8,"prazoPrometido":"16/06/2026","statusAtual":"EM_TRANSITO","parceiroLogistico":"Loggi","estoqueDisponivel":true,"historicoAtrasos":0,"reagendamentos":0,"latitude":-23.5505,"longitude":-46.6333},{"id":2,"codigoPedido":"LM-2026-0002","produto":"Tinta acrilica 18L","tipoProduto":"Pintura","regiaoEntrega":"Sao Paulo - Zona Leste","distanciaKm":22,"prazoPrometido":"15/06/2026","statusAtual":"ATRASADO","parceiroLogistico":"Total Express","estoqueDisponivel":false,"historicoAtrasos":3,"reagendamentos":2,"latitude":-23.54,"longitude":-46.49},{"id":3,"codigoPedido":"LM-2026-0003","produto":"Furadeira de impacto","tipoProduto":"Ferramentas eletricas","regiaoEntrega":"Sao Paulo - Zona Sul","distanciaKm":14,"prazoPrometido":"18/06/2026","statusAtual":"PENDENTE","parceiroLogistico":"Correios","estoqueDisponivel":true,"historicoAtrasos":1,"reagendamentos":0,"latitude":-23.65,"longitude":-46.7},{"id":4,"codigoPedido":"LM-2026-0004","produto":"Piso laminado (10 caixas)","tipoProduto":"Revestimento","regiaoEntrega":"Sao Paulo - Zona Norte","distanciaKm":19,"prazoPrometido":"14/06/2026","statusAtual":"ENTREGUE","parceiroLogistico":"Loggi","estoqueDisponivel":true,"historicoAtrasos":0,"reagendamentos":0,"latitude":-23.48,"longitude":-46.62}]
+
+### GET /oracle/pedidos
+HTTP/1.1 200 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:26 GMT
+
+[{"id":1,"codigoPedido":"LM-2026-0001","produto":"Kit ferramentas basicas","tipoProduto":"Ferramentas","regiaoEntrega":"Sao Paulo - Centro","distanciaKm":8,"prazoPrometido":"16/06/2026","statusAtual":"EM_TRANSITO","parceiroLogistico":"Loggi","estoqueDisponivel":true,"historicoAtrasos":0,"reagendamentos":0,"latitude":-23.5505,"longitude":-46.6333,"riscoScore":0,"riscoNivel":"BAIXO","resumo":"LM-2026-0001 | Kit ferramentas basicas | EM_TRANSITO | Risco 0 (BAIXO) | Prazo 16/06/2026 | Parceiro Loggi"},{"id":2,"codigoPedido":"LM-2026-0002","produto":"Tinta acrilica 18L","tipoProduto":"Pintura","regiaoEntrega":"Sao Paulo - Zona Leste","distanciaKm":22,"prazoPrometido":"15/06/2026","statusAtual":"ATRASADO","parceiroLogistico":"Total Express","estoqueDisponivel":false,"historicoAtrasos":3,"reagendamentos":2,"latitude":-23.54,"longitude":-46.49,"riscoScore":100,"riscoNivel":"CRITICO","resumo":"LM-2026-0002 | Tinta acrilica 18L | ATRASADO | Risco 100 (CRITICO) | Prazo 15/06/2026 | Parceiro Total Express"},{"id":3,"codigoPedido":"LM-2026-0003","produto":"Furadeira de impacto","tipoProduto":"Ferramentas eletricas","regiaoEntrega":"Sao Paulo - Zona Sul","distanciaKm":14,"prazoPrometido":"18/06/2026","statusAtual":"PENDENTE","parceiroLogistico":"Correios","estoqueDisponivel":true,"historicoAtrasos":1,"reagendamentos":0,"latitude":-23.65,"longitude":-46.7,"riscoScore":26,"riscoNivel":"MEDIO","resumo":"LM-2026-0003 | Furadeira de impacto | PENDENTE | Risco 26 (MEDIO) | Prazo 18/06/2026 | Parceiro Correios"},{"id":4,"codigoPedido":"LM-2026-0004","produto":"Piso laminado (10 caixas)","tipoProduto":"Revestimento","regiaoEntrega":"Sao Paulo - Zona Norte","distanciaKm":19,"prazoPrometido":"14/06/2026","statusAtual":"ENTREGUE","parceiroLogistico":"Loggi","estoqueDisponivel":true,"historicoAtrasos":0,"reagendamentos":0,"latitude":-23.48,"longitude":-46.62,"riscoScore":8,"riscoNivel":"BAIXO","resumo":"LM-2026-0004 | Piso laminado (10 caixas) | ENTREGUE | Risco 8 (BAIXO) | Prazo 14/06/2026 | Parceiro Loggi"},{"id":5,"codigoPedido":"LM-2026-0005","produto":"Ventilador de teto","tipoProduto":"Eletrico","regiaoEntrega":"Sao Paulo - Zona Leste","distanciaKm":25,"prazoPrometido":"20/06/2026","statusAtual":"EM_TRANSITO","parceiroLogistico":"Correios","estoqueDisponivel":true,"historicoAtrasos":1,"reagendamentos":1,"latitude":-23.545,"longitude":-46.475,"riscoScore":45,"riscoNivel":"MEDIO","resumo":"LM-2026-0005 | Ventilador de teto | EM_TRANSITO | Risco 45 (MEDIO) | Prazo 20/06/2026 | Parceiro Correios"}]
+
+### POST /oracle/entregas/2/recalcular-risco
+HTTP/1.1 200 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:26 GMT
+
+{"pedidoId":2,"riscoScore":100,"riscoNivel":"CRITICO","recomendacao":"Acionar suporte logistico e oferecer reagendamento proativo.","mensagemCliente":"Detectamos fatores que podem afetar a janela prometida."}
+
+### POST /oracle/sensores/1/leituras {valor:60}
+HTTP/1.1 201 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:26 GMT
+
+{"leituraId":1000,"sensorId":1,"pedidoId":2,"valor":60.0,"alertasGerados":1}
+
+### GET /oracle/alertas?status=ABERTO
+HTTP/1.1 200 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:27 GMT
+
+[{"id":1007,"pedidoId":2,"codigoPedido":"LM-2026-0002","origem":"SENSOR","nivel":"CRITICO","mensagem":"Sensor de TEMPERATURA do pedido LM-2026-0002 fora da faixa segura: 60.00 C (faixa 5.00 a 40.00 C)","dataHora":"03/10/2026 15:16:27","status":"ABERTO"},{"id":1006,"pedidoId":2,"codigoPedido":"LM-2026-0002","origem":"RISCO","nivel":"CRITICO","mensagem":"Risco CRITICO (score 100) no pedido LM-2026-0002: Acionar suporte logistico e oferecer reagendamento proativo.","dataHora":"03/10/2026 15:13:19","status":"ABERTO"},{"id":1005,"pedidoId":5,"codigoPedido":"LM-2026-0005","origem":"SENSOR","nivel":"CRITICO","mensagem":"Sensor de VIBRACAO do pedido LM-2026-0005 fora da faixa segura: 3.20 g (faixa 0.00 a 2.50 g)","dataHora":"03/10/2026 15:13:19","status":"ABERTO"},{"id":1004,"pedidoId":3,"codigoPedido":"LM-2026-0003","origem":"SENSOR","nivel":"ALTO","mensagem":"Sensor de VIBRACAO do pedido LM-2026-0003 fora da faixa segura: 3.40 g (faixa 0.00 a 3.00 g)","dataHora":"03/10/2026 15:13:19","status":"ABERTO"},{"id":1003,"pedidoId":2,"codigoPedido":"LM-2026-0002","origem":"SENSOR","nivel":"CRITICO","mensagem":"Sensor de TEMPERATURA do pedido LM-2026-0002 fora da faixa segura: 52.30 C (faixa 5.00 a 40.00 C)","dataHora":"03/10/2026 15:13:19","status":"ABERTO"},{"id":1002,"pedidoId":2,"codigoPedido":"LM-2026-0002","origem":"SENSOR","nivel":"ALTO","mensagem":"Sensor de TEMPERATURA do pedido LM-2026-0002 fora da faixa segura: 44.20 C (faixa 5.00 a 40.00 C)","dataHora":"03/10/2026 15:13:19","status":"ABERTO"},{"id":1001,"pedidoId":4,"codigoPedido":"LM-2026-0004","origem":"SENSOR","nivel":"CRITICO","mensagem":"Sensor de UMIDADE do pedido LM-2026-0004 fora da faixa segura: 74.00 % (faixa 30.00 a 65.00 %)","dataHora":"03/10/2026 15:13:19","status":"ABERTO"},{"id":1000,"pedidoId":4,"codigoPedido":"LM-2026-0004","origem":"SENSOR","nivel":"ALTO","mensagem":"Sensor de UMIDADE do pedido LM-2026-0004 fora da faixa segura: 68.50 % (faixa 30.00 a 65.00 %)","dataHora":"03/10/2026 15:13:19","status":"ABERTO"}]
+
+### POST /oracle/relatorios/usuarios
+HTTP/1.1 200 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:27 GMT
+
+[{"usuarioId":1,"nome":"Maria Aparecida Lima","cursos":3,"progressoMedio":35.0,"pedidos":1,"alertasAbertos":4,"classificacao":"EM_PROGRESSO","geradoEm":"03/10/2026 15:16:27"},{"usuarioId":2,"nome":"Jose Carlos Pereira","cursos":2,"progressoMedio":55.0,"pedidos":1,"alertasAbertos":0,"classificacao":"EM_PROGRESSO","geradoEm":"03/10/2026 15:16:27"},{"usuarioId":3,"nome":"Ana Beatriz Souza","cursos":2,"progressoMedio":75.0,"pedidos":1,"alertasAbertos":1,"classificacao":"ENGAJADO","geradoEm":"03/10/2026 15:16:27"},{"usuarioId":4,"nome":"Antonio Ferreira","cursos":1,"progressoMedio":20.0,"pedidos":1,"alertasAbertos":2,"classificacao":"INICIANTE","geradoEm":"03/10/2026 15:16:27"},{"usuarioId":5,"nome":"Lucia Helena Costa","cursos":1,"progressoMedio":45.0,"pedidos":1,"alertasAbertos":1,"classificacao":"EM_PROGRESSO","geradoEm":"03/10/2026 15:16:27"},{"usuarioId":6,"nome":"Pedro Henrique Alves","cursos":0,"progressoMedio":0.0,"pedidos":0,"alertasAbertos":0,"classificacao":"INICIANTE","geradoEm":"03/10/2026 15:16:27"}]
+
+### POST /oracle/entregas/999/recalcular-risco (esperado 404)
+HTTP/1.1 404 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:27 GMT
+
+{"timestamp":"2026-10-03T15:16:27.965141569","status":404,"erro":"Not Found","mensagens":["FN_CALCULA_RISCO: pedido nao encontrado (ID 999)."]}
+
+### GET /oracle/alertas?status=XYZ (esperado 400)
+HTTP/1.1 400 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:27 GMT
+Connection: close
+
+{"timestamp":"2026-10-03T15:16:28.278498672","status":400,"erro":"Bad Request","mensagens":["Status invalido. Use ABERTO ou RESOLVIDO."]}
+
+### POST /oracle/sensores/99/leituras (esperado 404)
+HTTP/1.1 404 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Type: application/json
+Transfer-Encoding: chunked
+Date: Sat, 03 Oct 2026 15:16:28 GMT
+
+{"timestamp":"2026-10-03T15:16:28.672744041","status":404,"erro":"Not Found","mensagens":["Sensor nao encontrado (ID 99)."]}
+
+### GET /oracle/pedidos sem token (esperado 401/403)
+HTTP/1.1 403 
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 0
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: SAMEORIGIN
+Content-Length: 0
+Date: Sat, 03 Oct 2026 15:16:28 GMT
+

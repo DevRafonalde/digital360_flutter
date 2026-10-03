@@ -149,3 +149,29 @@ conta) funcionam apontando para este backend — não só o núcleo.
 ## Ligar o dashboard Angular neste backend
 Já vem configurado em `dashboard/src/environments/environment.ts` apontando
 para `http://localhost:8080`.
+
+## Fase 6 — camada Oracle PL/SQL (pacote `plsql`)
+Endpoints sob `/oracle/**` que chamam as functions e procedures de
+[`database-oracle/`](../database-oracle/) via JDBC (`CallableStatement`).
+Ficam **desligados por padrão**; para ligar:
+
+```powershell
+$env:ORACLE_ENABLED="true"
+$env:ORACLE_URL="jdbc:oracle:thin:@localhost:1521/FREEPDB1"
+$env:ORACLE_USER="smarthas"; $env:ORACLE_PASSWORD="smarthas"
+mvn spring-boot:run
+```
+
+| Método | Rota | Rotina Oracle |
+|---|---|---|
+| GET | `/oracle/pedidos` e `/oracle/pedidos/{id}` | view `V_SH_PEDIDO_RISCO` (FN_CALCULA_RISCO, FN_NIVEL_RISCO, FN_RESUMO_PEDIDO) |
+| POST | `/oracle/entregas/{id}/recalcular-risco` | `SP_RECALCULAR_RISCO` (1 IN + 4 OUT) |
+| POST | `/oracle/sensores/{id}/leituras` `{"valor": 60}` | INSERT + `SP_REGISTRAR_ALERTAS_SENSORES` na mesma transação |
+| GET | `/oracle/alertas?status=ABERTO` | `T_SH_ALERTA` |
+| POST | `/oracle/relatorios/usuarios` | `SP_GERAR_RELATORIO_USUARIOS` |
+
+Todas exigem o token JWT (login `admin`/`admin123`). Erros `ORA-20001/20003` viram 404,
+`ORA-20002` vira 400. O pool Oracle é próprio do pacote (não é um bean `DataSource`), então
+o H2/JPA da Fase 5 continua funcionando normalmente. Testes: `mvn test`
+(`src/test/java/com/smarthas/backend/plsql/`). Teste completo no Docker:
+`database-oracle/testar_no_docker.ps1`.
