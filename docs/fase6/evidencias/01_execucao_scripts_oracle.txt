@@ -1,0 +1,503 @@
+
+PL/SQL procedure successfully completed.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Sequence created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Table created.
+
+
+Index created.
+
+
+Index created.
+
+
+Index created.
+
+
+Index created.
+
+
+Index created.
+
+
+Index created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+Comment created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+1 row created.
+
+
+Commit complete.
+
+
+TABELA		 QTD
+--------- ----------
+USUARIO 	   6
+CURSO		   4
+MATRICULA	   9
+SERVICO 	   4
+FAVORITO	   5
+PEDIDO		   5
+SENSOR		   5
+LEITURA 	  19
+
+8 rows selected.
+
+
+Function created.
+
+
+Function created.
+
+
+Function created.
+
+
+Function created.
+
+
+View created.
+
+
+Procedure created.
+
+
+Procedure created.
+
+
+Procedure created.
+
+
+CD_PEDIDO	     ST_PEDIDO		  SCORE
+-------------------- --------------- ----------
+NIVEL
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LM-2026-0002	     ATRASADO		    100
+CRITICO
+
+LM-2026-0005	     EM_TRANSITO	     45
+MEDIO
+
+LM-2026-0003	     PENDENTE		     26
+MEDIO
+
+LM-2026-0004	     ENTREGUE		      8
+BAIXO
+
+LM-2026-0001	     EM_TRANSITO	      0
+BAIXO
+
+
+
+RESUMO
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LM-2026-0002 | Tinta acrilica 18L | ATRASADO | Risco 100 (CRITICO) | Prazo 15/06/2026 | Parceiro Total Express
+
+
+NM_USUARIO											     PROGRESSO_MEDIO RISCO_MEDIO_PEDIDOS
+---------------------------------------------------------------------------------------------------- --------------- -------------------
+Maria Aparecida Lima												  35		     100
+Jose Carlos Pereira												  55		       0
+Ana Beatriz Souza												  75		      26
+Antonio Ferreira												  20		       8
+Lucia Helena Costa												  45		      45
+Pedro Henrique Alves												   0
+
+6 rows selected.
+
+
+CD_PEDIDO	     NR_SCORE_RISCO
+-------------------- --------------
+DS_NIVEL_RISCO
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DS_RESUMO
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+LM-2026-0001			  0
+BAIXO
+LM-2026-0001 | Kit ferramentas basicas | EM_TRANSITO | Risco 0 (BAIXO) | Prazo 16/06/2026 | Parceiro Loggi
+
+LM-2026-0002			100
+CRITICO
+LM-2026-0002 | Tinta acrilica 18L | ATRASADO | Risco 100 (CRITICO) | Prazo 15/06/2026 | Parceiro Total Express
+
+LM-2026-0003			 26
+MEDIO
+LM-2026-0003 | Furadeira de impacto | PENDENTE | Risco 26 (MEDIO) | Prazo 18/06/2026 | Parceiro Correios
+
+LM-2026-0004			  8
+BAIXO
+LM-2026-0004 | Piso laminado (10 caixas) | ENTREGUE | Risco 8 (BAIXO) | Prazo 14/06/2026 | Parceiro Loggi
+
+LM-2026-0005			 45
+MEDIO
+LM-2026-0005 | Ventilador de teto | EM_TRANSITO | Risco 45 (MEDIO) | Prazo 20/06/2026 | Parceiro Correios
+
+
+Alertas de sensor gerados: 6
+
+PL/SQL procedure successfully completed.
+
+
+ ID_ALERTA CD_PEDIDO		DS_NIVEL
+---------- -------------------- ----------
+DS_MENSAGEM
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      1000 LM-2026-0004 	ALTO
+Sensor de UMIDADE do pedido LM-2026-0004 fora da faixa segura: 68.50 % (faixa 30.00 a 65.00 %)
+
+      1001 LM-2026-0004 	CRITICO
+Sensor de UMIDADE do pedido LM-2026-0004 fora da faixa segura: 74.00 % (faixa 30.00 a 65.00 %)
+
+      1002 LM-2026-0002 	ALTO
+Sensor de TEMPERATURA do pedido LM-2026-0002 fora da faixa segura: 44.20 C (faixa 5.00 a 40.00 C)
+
+      1003 LM-2026-0002 	CRITICO
+Sensor de TEMPERATURA do pedido LM-2026-0002 fora da faixa segura: 52.30 C (faixa 5.00 a 40.00 C)
+
+      1004 LM-2026-0003 	ALTO
+Sensor de VIBRACAO do pedido LM-2026-0003 fora da faixa segura: 3.40 g (faixa 0.00 a 3.00 g)
+
+      1005 LM-2026-0005 	CRITICO
+Sensor de VIBRACAO do pedido LM-2026-0005 fora da faixa segura: 3.20 g (faixa 0.00 a 2.50 g)
+
+
+6 rows selected.
+
+Alertas na reexecucao: 0
+
+PL/SQL procedure successfully completed.
+
+LM-2026-0001 -> 0 BAIXO | Entrega dentro do esperado. Nenhuma acao necessaria.
+LM-2026-0002 -> 100 CRITICO | Acionar suporte logistico e oferecer reagendamento proativo.
+LM-2026-0003 -> 26 MEDIO | Acompanhar a entrega no proximo ciclo de atualizacao.
+LM-2026-0004 -> 8 BAIXO | Entrega dentro do esperado. Nenhuma acao necessaria.
+LM-2026-0005 -> 45 MEDIO | Acompanhar a entrega no proximo ciclo de atualizacao.
+
+PL/SQL procedure successfully completed.
+
+
+PL/SQL procedure successfully completed.
+
+
+ALERTAS_RISCO_ABERTOS
+---------------------
+		    1
+
+
+ ID_PEDIDO   NR_SCORE DS_NIVEL	 CALCULADO_EM
+---------- ---------- ---------- -------------------
+	 1	    0 BAIXO	 03/10/2026 15:23:36
+	 2	  100 CRITICO	 03/10/2026 15:23:36
+	 3	   26 MEDIO	 03/10/2026 15:23:36
+	 4	    8 BAIXO	 03/10/2026 15:23:36
+	 5	   45 MEDIO	 03/10/2026 15:23:36
+	 2	  100 CRITICO	 03/10/2026 15:23:36
+
+6 rows selected.
+
+=== Relatorio resumido por usuario - Smart HAS / Digital 360 ===
+ID  USUARIO		    CURSOS  PROGR.  PEDIDOS  ALERTAS  CLASSIFICACAO
+1   Maria Aparecida Lima    3	    35	    1	     3	      EM_PROGRESSO
+2   Jose Carlos Pereira     2	    55	    1	     0	      EM_PROGRESSO
+3   Ana Beatriz Souza	    2	    75	    1	     1	      ENGAJADO
+4   Antonio Ferreira	    1	    20	    1	     2	      INICIANTE
+5   Lucia Helena Costa	    1	    45	    1	     1	      EM_PROGRESSO
+6   Pedro Henrique Alves    0	    0	    0	     0	      INICIANTE
+Usuarios processados: 6
+
+PL/SQL procedure successfully completed.
+
+
+NM_USUARIO											      QT_CURSOS VL_PROGRESSO_MEDIO QT_PEDIDOS QT_ALERTAS_ABERTOS DS_CLASSIFICACA
+---------------------------------------------------------------------------------------------------- ---------- ------------------ ---------- ------------------ ---------------
+Maria Aparecida Lima											      3 		35	    1		       3 EM_PROGRESSO
+Jose Carlos Pereira											      2 		55	    1		       0 EM_PROGRESSO
+Ana Beatriz Souza											      2 		75	    1		       1 ENGAJADO
+Antonio Ferreira											      1 		20	    1		       2 INICIANTE
+Lucia Helena Costa											      1 		45	    1		       1 EM_PROGRESSO
+Pedro Henrique Alves											      0 		 0	    0		       0 INICIANTE
+
+6 rows selected.
+
+C1 OK -> ORA-20001: FN_CALCULA_RISCO: pedido nao encontrado (ID 999).
+
+PL/SQL procedure successfully completed.
+
+C2 OK -> ORA-20002: Score invalido (esperado 0 a 100): 150
+
+PL/SQL procedure successfully completed.
+
+C3 OK -> ORA-20003: SP_GERAR_RELATORIO_USUARIOS: usuario nao encontrado (ID 999).
+
+PL/SQL procedure successfully completed.
+
+C4 OK -> ORA-20002: SP_RECALCULAR_RISCO: o parametro p_id_pedido nao pode ser nulo.
+
+PL/SQL procedure successfully completed.
+
+
+OBJECT_NAME															 OBJECT_TYPE		 STATUS
+-------------------------------------------------------------------------------------------------------------------------------- ----------------------- -------
+FN_CALCULA_RISCO														 FUNCTION		 VALID
+FN_NIVEL_RISCO															 FUNCTION		 VALID
+FN_PROGRESSO_MEDIO_USUARIO													 FUNCTION		 VALID
+FN_RESUMO_PEDIDO														 FUNCTION		 VALID
+SP_GERAR_RELATORIO_USUARIOS													 PROCEDURE		 VALID
+SP_RECALCULAR_RISCO														 PROCEDURE		 VALID
+SP_REGISTRAR_ALERTAS_SENSORES													 PROCEDURE		 VALID
+V_SH_PEDIDO_RISCO														 VIEW			 VALID
+
+8 rows selected.
+
+=== USER_ERRORS ===
+
+no rows selected
+

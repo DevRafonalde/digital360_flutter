@@ -5,6 +5,19 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Fase 6 — Oracle PL/SQL**: pasta `database-oracle/` com modelo de 11 tabelas, dados
+  simulados, 4 functions (`FN_CALCULA_RISCO`, `FN_PROGRESSO_MEDIO_USUARIO`, `FN_NIVEL_RISCO`,
+  `FN_RESUMO_PEDIDO`), 3 procedures (`SP_REGISTRAR_ALERTAS_SENSORES`, `SP_RECALCULAR_RISCO`,
+  `SP_GERAR_RELATORIO_USUARIOS`), view `V_SH_PEDIDO_RISCO` e script de testes. Executado de
+  verdade no Oracle Database 23ai Free (Docker).
+- `backend-java`: pacote `plsql` com endpoints `/oracle/**` que chamam as procedures via
+  JDBC (`CallableStatement`), pool Oracle próprio (não interfere no H2/JPA da Fase 5),
+  erros `ORA-2000x` traduzidos para HTTP 404/400 pelo `GlobalExceptionHandler` e testes
+  JUnit/Mockito. Desligado por padrão (`ORACLE_ENABLED=false`).
+
+### Fixed
+- `GlobalExceptionHandler`: rota inexistente (`NoResourceFoundException`) agora devolve 404
+  em vez de cair no handler genérico e virar 500.
 - Seletor de ambiente de backend (Mock / Python / Java) em Configurações →
   "Conexão (avançado)" — Fase 5. Permite trocar, em tempo de execução e sem
   recompilar, entre o modo mock, o backend Python real do time e o novo backend

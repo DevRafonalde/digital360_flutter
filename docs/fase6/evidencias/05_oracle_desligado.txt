@@ -1,0 +1,2 @@
+backend-java SEM ORACLE_ENABLED (padrao da Fase 5):
+token=True pedidos(H2)=200 oracle=404
