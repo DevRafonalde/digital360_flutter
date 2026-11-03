@@ -21,17 +21,28 @@ existiam mockados no app (recomendação, risco, assistente, detecção de sazon
 reagendamento, feedback, renovação de sessão). Ver [`backend/README.md`](backend/README.md)
 para detalhes e testes.
 
-## Fase 6 — Banco de Dados na Sociedade 5.0 (Oracle PL/SQL)
+## Consolidando o Smart HAS — Oracle PL/SQL e CI/CD
 
 | Item | Onde está |
 |---|---|
-| Modelo Oracle (11 tabelas), dados simulados, DER | [`database-oracle/`](database-oracle/) (`01_ddl_tabelas.sql`, `02_dados_simulados.sql`, `DER_SmartHAS_Fase6.png`) |
-| 4 functions e 3 procedures PL/SQL + testes de uso | `database-oracle/03_functions.sql`, `04_procedures.sql`, `05_testes_e_consultas.sql` |
+| Modelo Oracle (12 tabelas), dados simulados | [`database-oracle/`](database-oracle/) (`01_ddl_tabelas.sql`, `02_dados_simulados.sql`) |
+| 4 packages: risco, IoT, usuário e consultas | `03_pkg_sh_risco.sql`, `04_pkg_sh_iot.sql`, `05_pkg_sh_usuario.sql`, `06_pkg_sh_consulta.sql` |
+| Dynamic SQL (`DBMS_SQL` e `OPEN FOR`) | `06_pkg_sh_consulta.sql`, endpoints `/oracle/pedidos/busca` e `/oracle/pedidos/resumo` |
+| 2 triggers: auditoria e automação | `07_triggers.sql` |
+| Testes PL/SQL automatizados e demonstração | `09_testes_automatizados.sql`, `08_testes_e_consultas.sql` |
 | Integração REST → Java → JDBC → Oracle | `backend-java/src/main/java/com/smarthas/backend/plsql/` (endpoints `/oracle/**`, ligados com `ORACLE_ENABLED=true`) |
-| Documentação, slides, roteiro do vídeo e evidências | [`docs/fase6/`](docs/fase6/) |
-| Teste completo no Docker (Oracle + scripts + `mvn test` + endpoints) | `database-oracle/testar_no_docker.ps1` |
+| Pipeline CI/CD | [`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml) e [`deploy/`](deploy/) |
+| Documentação da entrega | [`docs/fase7/`](docs/fase7/) (Fase 6 em [`docs/fase6/`](docs/fase6/)) |
 
 Sem `ORACLE_ENABLED=true`, o `backend-java` sobe exatamente como na Fase 5 (só H2).
+
+**Rodar tudo localmente** (precisa só do Docker; API em `http://localhost:8080/swagger-ui.html`,
+Oracle em `localhost:1521/FREEPDB1`):
+
+```bash
+bash deploy/deploy_homolog.sh                                 # sobe, instala e valida
+docker compose -f deploy/docker-compose.homolog.yml down -v   # encerra
+```
 
 ## Funcionalidades
 

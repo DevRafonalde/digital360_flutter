@@ -51,3 +51,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Relatorios locais do pipeline (deploy/deploy_homolog.sh)
+/relatorios/

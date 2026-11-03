@@ -2,6 +2,7 @@ package com.smarthas.backend.plsql;
 
 import com.smarthas.backend.exception.ApiException;
 import com.smarthas.backend.plsql.dto.OracleLeituraRegistrada;
+import com.smarthas.backend.plsql.dto.OracleResumoPedidos;
 import com.smarthas.backend.plsql.dto.OracleRiscoLogistico;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class OraclePlsqlRepositoryTest {
     @Test
     void recalcularRiscoChamaProcedureComParametrosInEOut() throws SQLException {
         CallableStatement cs = mock(CallableStatement.class);
-        when(con.prepareCall("{call SP_RECALCULAR_RISCO(?, ?, ?, ?, ?)}")).thenReturn(cs);
+        when(con.prepareCall("{call PKG_SH_RISCO.SP_RECALCULAR_RISCO(?, ?, ?, ?, ?)}")).thenReturn(cs);
         when(cs.getInt(2)).thenReturn(100);
         when(cs.getString(3)).thenReturn("CRITICO");
         when(cs.getString(4)).thenReturn("Acionar suporte logistico e oferecer reagendamento proativo.");
@@ -53,6 +54,53 @@ class OraclePlsqlRepositoryTest {
         verify(cs).execute();
         assertEquals(100, r.riscoScore());
         assertEquals("CRITICO", r.riscoNivel());
+    }
+
+    @Test
+    void buscarPedidosEnviaFiltroNuloComoNullELeOCursorRetornado() throws SQLException {
+        CallableStatement cs = mock(CallableStatement.class);
+        ResultSet rs = mock(ResultSet.class);
+        when(con.prepareCall(OraclePlsqlRepository.CALL_BUSCAR_PEDIDOS)).thenReturn(cs);
+        when(cs.getObject(1, ResultSet.class)).thenReturn(rs);
+        when(rs.next()).thenReturn(false);
+
+        assertEquals(0, repository.buscarPedidos("ATRASADO", null, null, null, "score", "DESC").size());
+
+        verify(cs).registerOutParameter(1, Types.REF_CURSOR);
+        verify(cs).setString(2, "ATRASADO");
+        verify(cs).setString(3, null);
+        verify(cs).setNull(5, Types.NUMERIC);
+        verify(cs).execute();
+        verify(rs).close();
+    }
+
+    @Test
+    void resumirPedidosMapeiaAsColunasDoCursor() throws SQLException {
+        CallableStatement cs = mock(CallableStatement.class);
+        ResultSet rs = mock(ResultSet.class);
+        when(con.prepareCall(OraclePlsqlRepository.CALL_RESUMO_PEDIDOS)).thenReturn(cs);
+        when(cs.getObject(1, ResultSet.class)).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getString("DS_GRUPO")).thenReturn("Correios");
+        when(rs.getInt("QT_PEDIDOS")).thenReturn(2);
+        when(rs.getDouble("VL_SCORE_MEDIO")).thenReturn(35.5);
+        when(rs.getInt("QT_EM_RISCO")).thenReturn(0);
+
+        OracleResumoPedidos linha = repository.resumirPedidos("parceiro").get(0);
+
+        verify(cs).setString(2, "parceiro");
+        assertEquals(new OracleResumoPedidos("Correios", 2, 35.5, 0), linha);
+    }
+
+    @Test
+    void resolverAlertaChamaAProcedureDoPacote() throws SQLException {
+        CallableStatement cs = mock(CallableStatement.class);
+        when(con.prepareCall("{call PKG_SH_IOT.SP_RESOLVER_ALERTA(?)}")).thenReturn(cs);
+
+        repository.resolverAlerta(7);
+
+        verify(cs).setLong(1, 7);
+        verify(cs).execute();
     }
 
     @Test

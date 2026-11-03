@@ -58,6 +58,21 @@ class OraclePlsqlServiceTest {
     }
 
     @Test
+    void resolverAlertaRejeitaIdInvalidoSemIrAoBanco() {
+        ApiException e = assertThrows(ApiException.class, () -> service.resolverAlerta(-1));
+        assertEquals(HttpStatus.BAD_REQUEST, e.getStatus());
+        verify(repository, never()).resolverAlerta(anyLong());
+    }
+
+    @Test
+    void listarAuditoriaAceitaFiltroOpcional() {
+        service.listarAuditoria(null);
+        verify(repository).listarAuditoria(null);
+
+        assertThrows(ApiException.class, () -> service.listarAuditoria(0L));
+    }
+
+    @Test
     void listarAlertasNormalizaEValidaStatus() {
         service.listarAlertas(" aberto ");
         verify(repository).listarAlertas("ABERTO");

@@ -83,7 +83,7 @@ public class SecurityConfig {
                         // POST /cursos e compartilhado (ADMIN cadastra oficial, tutor publica
                         // comunitario) - a checagem de "quem pode" fica na camada de servico,
                         // nao aqui. PUT/DELETE de cursos continuam exclusivos do ADMIN.
-                        .requestMatchers(HttpMethod.POST, "/servicos/**", "/pedidos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/servicos/**", "/pedidos/**", "/oracle/alertas/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/cursos/**", "/servicos/**", "/pedidos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/cursos/**", "/servicos/**", "/pedidos/**").hasRole("ADMIN")
                         .anyRequest().authenticated()

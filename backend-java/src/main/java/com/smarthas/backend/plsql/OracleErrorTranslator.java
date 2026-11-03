@@ -12,6 +12,7 @@ import java.sql.SQLException;
  *
  *   ORA-20001 pedido nao encontrado  -> 404
  *   ORA-20003 usuario nao encontrado -> 404
+ *   ORA-20004 alerta nao encontrado  -> 404
  *   ORA-20002 parametro invalido     -> 400
  *   demais (conexao, SQL inesperado) -> 503
  */
@@ -23,7 +24,7 @@ public final class OracleErrorTranslator {
     public static ApiException traduzir(String operacao, SQLException e) {
         String mensagem = limpar(e.getMessage());
         return switch (e.getErrorCode()) {
-            case 20001, 20003 -> new ApiException(HttpStatus.NOT_FOUND, mensagem);
+            case 20001, 20003, 20004 -> new ApiException(HttpStatus.NOT_FOUND, mensagem);
             case 20002 -> new ApiException(HttpStatus.BAD_REQUEST, mensagem);
             default -> new ApiException(HttpStatus.SERVICE_UNAVAILABLE,
                     "Falha ao " + operacao + " no Oracle: " + mensagem);

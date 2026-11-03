@@ -2,9 +2,11 @@ package com.smarthas.backend.plsql;
 
 import com.smarthas.backend.exception.ApiException;
 import com.smarthas.backend.plsql.dto.OracleAlerta;
+import com.smarthas.backend.plsql.dto.OracleAuditoriaAlerta;
 import com.smarthas.backend.plsql.dto.OracleLeituraRegistrada;
 import com.smarthas.backend.plsql.dto.OraclePedido;
 import com.smarthas.backend.plsql.dto.OracleRelatorioUsuario;
+import com.smarthas.backend.plsql.dto.OracleResumoPedidos;
 import com.smarthas.backend.plsql.dto.OracleRiscoLogistico;
 
 import javax.sql.DataSource;
@@ -39,9 +41,20 @@ public class OraclePlsqlRepository implements AutoCloseable {
           + "       VL_LATITUDE, VL_LONGITUDE, NR_SCORE_RISCO, DS_NIVEL_RISCO, DS_RESUMO "
           + "  FROM V_SH_PEDIDO_RISCO";
 
-    static final String CALL_RECALCULAR_RISCO = "{call SP_RECALCULAR_RISCO(?, ?, ?, ?, ?)}";
-    static final String CALL_REGISTRAR_ALERTAS = "{call SP_REGISTRAR_ALERTAS_SENSORES(?, ?)}";
-    static final String CALL_GERAR_RELATORIO = "{call SP_GERAR_RELATORIO_USUARIOS(?, ?)}";
+    static final String CALL_RECALCULAR_RISCO = "{call PKG_SH_RISCO.SP_RECALCULAR_RISCO(?, ?, ?, ?, ?)}";
+    static final String CALL_REGISTRAR_ALERTAS = "{call PKG_SH_IOT.SP_REGISTRAR_ALERTAS_SENSORES(?, ?)}";
+    static final String CALL_GERAR_RELATORIO = "{call PKG_SH_USUARIO.SP_GERAR_RELATORIO_USUARIOS(?, ?)}";
+
+    static final String CALL_RESOLVER_ALERTA = "{call PKG_SH_IOT.SP_RESOLVER_ALERTA(?)}";
+    static final String CALL_BUSCAR_PEDIDOS = "{? = call PKG_SH_CONSULTA.FN_BUSCAR_PEDIDOS(?, ?, ?, ?, ?, ?)}";
+    static final String CALL_RESUMO_PEDIDOS = "{? = call PKG_SH_CONSULTA.FN_RESUMO_POR_DIMENSAO(?)}";
+
+    static final String SQL_LISTAR_AUDITORIA =
+            "SELECT ID_AUDITORIA, ID_ALERTA, ID_PEDIDO, DS_OPERACAO, ST_ANTERIOR, ST_NOVO, DS_NIVEL, "
+          + "       NM_USUARIO_BD, NM_MODULO, DT_EVENTO "
+          + "  FROM T_SH_ALERTA_AUDITORIA "
+          + " WHERE (? IS NULL OR ID_ALERTA = ?) "
+          + " ORDER BY ID_AUDITORIA DESC";
 
     static final String SQL_PEDIDO_DO_SENSOR = "SELECT ID_PEDIDO FROM T_SH_SENSOR WHERE ID_SENSOR = ?";
     static final String SQL_PROXIMA_LEITURA = "SELECT SEQ_SH_LEITURA.NEXTVAL FROM DUAL";
@@ -105,6 +118,61 @@ public class OraclePlsqlRepository implements AutoCloseable {
             }
         } catch (SQLException e) {
             throw OracleErrorTranslator.traduzir("buscar pedido", e);
+        }
+    }
+
+    /**
+     * Busca flexivel via Dynamic SQL (PKG_SH_CONSULTA.FN_BUSCAR_PEDIDOS).
+     * Filtros nulos nao entram no SQL; a validacao fica no pacote.
+     */
+    public List<OraclePedido> buscarPedidos(String status, String nivelRisco, String regiao, Integer scoreMin,
+                                            String ordenarPor, String direcao) {
+        try (Connection con = dataSource.getConnection();
+             CallableStatement cs = con.prepareCall(CALL_BUSCAR_PEDIDOS)) {
+            cs.registerOutParameter(1, Types.REF_CURSOR);
+            cs.setString(2, status);
+            cs.setString(3, nivelRisco);
+            cs.setString(4, regiao);
+            if (scoreMin == null) {
+                cs.setNull(5, Types.NUMERIC);
+            } else {
+                cs.setInt(5, scoreMin);
+            }
+            cs.setString(6, ordenarPor);
+            cs.setString(7, direcao);
+            cs.execute();
+            try (ResultSet rs = cs.getObject(1, ResultSet.class)) {
+                List<OraclePedido> pedidos = new ArrayList<>();
+                while (rs.next()) {
+                    pedidos.add(mapearPedido(rs));
+                }
+                return pedidos;
+            }
+        } catch (SQLException e) {
+            throw OracleErrorTranslator.traduzir("buscar pedidos", e);
+        }
+    }
+
+    /** Indicadores por dimensao escolhida em execucao (PKG_SH_CONSULTA.FN_RESUMO_POR_DIMENSAO). */
+    public List<OracleResumoPedidos> resumirPedidos(String dimensao) {
+        try (Connection con = dataSource.getConnection();
+             CallableStatement cs = con.prepareCall(CALL_RESUMO_PEDIDOS)) {
+            cs.registerOutParameter(1, Types.REF_CURSOR);
+            cs.setString(2, dimensao);
+            cs.execute();
+            try (ResultSet rs = cs.getObject(1, ResultSet.class)) {
+                List<OracleResumoPedidos> linhas = new ArrayList<>();
+                while (rs.next()) {
+                    linhas.add(new OracleResumoPedidos(
+                            rs.getString("DS_GRUPO"),
+                            rs.getInt("QT_PEDIDOS"),
+                            rs.getDouble("VL_SCORE_MEDIO"),
+                            rs.getInt("QT_EM_RISCO")));
+                }
+                return linhas;
+            }
+        } catch (SQLException e) {
+            throw OracleErrorTranslator.traduzir("resumir pedidos", e);
         }
     }
 
@@ -216,6 +284,50 @@ public class OraclePlsqlRepository implements AutoCloseable {
             }
         } catch (SQLException e) {
             throw OracleErrorTranslator.traduzir("listar alertas", e);
+        }
+    }
+
+    /** Encerra o alerta; a trigger TRG_SH_ALERTA_AUDITORIA registra a mudanca. */
+    public void resolverAlerta(long idAlerta) {
+        try (Connection con = dataSource.getConnection();
+             CallableStatement cs = con.prepareCall(CALL_RESOLVER_ALERTA)) {
+            cs.setLong(1, idAlerta);
+            cs.execute();
+        } catch (SQLException e) {
+            throw OracleErrorTranslator.traduzir("resolver alerta", e);
+        }
+    }
+
+    /** Trilha de auditoria gravada pela trigger; alerta nulo traz todos. */
+    public List<OracleAuditoriaAlerta> listarAuditoria(Long idAlerta) {
+        try (Connection con = dataSource.getConnection();
+             PreparedStatement ps = con.prepareStatement(SQL_LISTAR_AUDITORIA)) {
+            if (idAlerta == null) {
+                ps.setNull(1, Types.NUMERIC);
+                ps.setNull(2, Types.NUMERIC);
+            } else {
+                ps.setLong(1, idAlerta);
+                ps.setLong(2, idAlerta);
+            }
+            try (ResultSet rs = ps.executeQuery()) {
+                List<OracleAuditoriaAlerta> linhas = new ArrayList<>();
+                while (rs.next()) {
+                    linhas.add(new OracleAuditoriaAlerta(
+                            rs.getLong("ID_AUDITORIA"),
+                            rs.getLong("ID_ALERTA"),
+                            rs.getLong("ID_PEDIDO"),
+                            rs.getString("DS_OPERACAO"),
+                            rs.getString("ST_ANTERIOR"),
+                            rs.getString("ST_NOVO"),
+                            rs.getString("DS_NIVEL"),
+                            rs.getString("NM_USUARIO_BD"),
+                            rs.getString("NM_MODULO"),
+                            formatarDataHora(rs.getTimestamp("DT_EVENTO"))));
+                }
+                return linhas;
+            }
+        } catch (SQLException e) {
+            throw OracleErrorTranslator.traduzir("listar auditoria", e);
         }
     }
 
