@@ -25,7 +25,7 @@
 2. Gravar o vídeo seguindo `ROTEIRO_VIDEO.md` e publicar como **Não listado**.
 3. Trocar `[INSERIR LINK DO VÍDEO]` no `.docx` (1 lugar) e no `.pptx` (slides 1 e 10). Ao abrir o `.docx`, o Word pergunta se deve atualizar os campos: responda **Sim** para atualizar o sumário.
 4. Exportar os dois PDFs de novo.
-5. Montar uma pasta com a documentação em PDF, os slides em PDF e o link do GitHub, compactar em .ZIP e fazer o upload com os RMs 556970, 550361, 557632, 559136 e 557500.
+5. Atualizar a pasta de entrega `SmartHAS_Consolidacao` (fora do repositório), compactar em .ZIP e fazer o upload com os RMs 556970, 550361, 557632, 559136 e 557500.
 
 ## Antes do upload
 
