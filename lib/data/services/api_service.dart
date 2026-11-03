@@ -106,6 +106,9 @@ class ApiService {
     if (res.statusCode == 200) {
       return Usuario.fromJson(jsonDecode(res.body));
     }
+    if (res.statusCode == 401) {
+      throw Exception('Senha invalida');
+    }
     throw Exception('Falha no login (${res.statusCode})');
   }
 

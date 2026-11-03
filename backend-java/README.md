@@ -164,14 +164,17 @@ mvn spring-boot:run
 
 | Método | Rota | Rotina Oracle |
 |---|---|---|
-| GET | `/oracle/pedidos` e `/oracle/pedidos/{id}` | view `V_SH_PEDIDO_RISCO` (FN_CALCULA_RISCO, FN_NIVEL_RISCO, FN_RESUMO_PEDIDO) |
-| POST | `/oracle/entregas/{id}/recalcular-risco` | `SP_RECALCULAR_RISCO` (1 IN + 4 OUT) |
-| POST | `/oracle/sensores/{id}/leituras` `{"valor": 60}` | INSERT + `SP_REGISTRAR_ALERTAS_SENSORES` na mesma transação |
+| GET | `/oracle/pedidos` e `/oracle/pedidos/{id}` | view `V_SH_PEDIDO_RISCO` (`PKG_SH_RISCO`) |
+| GET | `/oracle/pedidos/busca?status=&nivel=&regiao=&scoreMin=&ordenarPor=&direcao=` | Dynamic SQL: `PKG_SH_CONSULTA.FN_BUSCAR_PEDIDOS` |
+| GET | `/oracle/pedidos/resumo?dimensao=status\|nivel\|regiao\|parceiro` | Dynamic SQL: `PKG_SH_CONSULTA.FN_RESUMO_POR_DIMENSAO` |
+| POST | `/oracle/entregas/{id}/recalcular-risco` | `PKG_SH_RISCO.SP_RECALCULAR_RISCO` (1 IN + 4 OUT) |
+| POST | `/oracle/sensores/{id}/leituras` `{"valor": 60}` | INSERT + `PKG_SH_IOT.SP_REGISTRAR_ALERTAS_SENSORES` na mesma transação |
 | GET | `/oracle/alertas?status=ABERTO` | `T_SH_ALERTA` |
-| POST | `/oracle/relatorios/usuarios` | `SP_GERAR_RELATORIO_USUARIOS` |
+| POST | `/oracle/alertas/{id}/resolver` (ADMIN) | `PKG_SH_IOT.SP_RESOLVER_ALERTA` |
+| GET | `/oracle/alertas/auditoria?alertaId=` | `T_SH_ALERTA_AUDITORIA` (trigger `TRG_SH_ALERTA_AUDITORIA`) |
+| POST | `/oracle/relatorios/usuarios` | `PKG_SH_USUARIO.SP_GERAR_RELATORIO_USUARIOS` |
 
-Todas exigem o token JWT (login `admin`/`admin123`). Erros `ORA-20001/20003` viram 404,
+Todas exigem o token JWT (login `admin`/`admin123`). Erros `ORA-20001/20003/20004` viram 404,
 `ORA-20002` vira 400. O pool Oracle é próprio do pacote (não é um bean `DataSource`), então
-o H2/JPA da Fase 5 continua funcionando normalmente. Testes: `mvn test`
-(`src/test/java/com/smarthas/backend/plsql/`). Teste completo no Docker:
-`database-oracle/testar_no_docker.ps1`.
+o H2/JPA da Fase 5 continua funcionando normalmente. Testes unitários: `mvn verify`.
+Teste completo com Oracle real: `bash deploy/deploy_homolog.sh` (na raiz do repositório).

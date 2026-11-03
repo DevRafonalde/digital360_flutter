@@ -1,0 +1,13 @@
+App Flutter Web (Chromium) contra backend-java + Oracle em homologacao, ambiente Java.
+Flutter 3.44.0 em Docker: dart analyze sem problemas; flutter test: 85 testes, todos passaram.
+
+Chamadas do app a API (metodo, rota, HTTP):
+('POST', '/auth/usuarios/login', 401)
+('POST', '/auth/usuarios/login', 200)
+('GET', '/pedidos', 200)
+('GET', '/servicos', 200)
+('GET', '/pedidos', 200)
+('GET', '/metricas/impacto', 200)
+('GET', '/cursos', 200)
+('GET', '/cursos', 200)
+('POST', '/entregas/2/recalcular-risco', 200)

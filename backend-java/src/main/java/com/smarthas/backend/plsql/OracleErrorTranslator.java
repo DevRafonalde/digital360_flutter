@@ -1,6 +1,8 @@
 package com.smarthas.backend.plsql;
 
 import com.smarthas.backend.exception.ApiException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import java.sql.SQLException;
@@ -12,10 +14,13 @@ import java.sql.SQLException;
  *
  *   ORA-20001 pedido nao encontrado  -> 404
  *   ORA-20003 usuario nao encontrado -> 404
+ *   ORA-20004 alerta nao encontrado  -> 404
  *   ORA-20002 parametro invalido     -> 400
  *   demais (conexao, SQL inesperado) -> 503
  */
 public final class OracleErrorTranslator {
+
+    private static final Logger log = LoggerFactory.getLogger(OracleErrorTranslator.class);
 
     private OracleErrorTranslator() {
     }
@@ -23,10 +28,14 @@ public final class OracleErrorTranslator {
     public static ApiException traduzir(String operacao, SQLException e) {
         String mensagem = limpar(e.getMessage());
         return switch (e.getErrorCode()) {
-            case 20001, 20003 -> new ApiException(HttpStatus.NOT_FOUND, mensagem);
+            case 20001, 20003, 20004 -> new ApiException(HttpStatus.NOT_FOUND, mensagem);
             case 20002 -> new ApiException(HttpStatus.BAD_REQUEST, mensagem);
-            default -> new ApiException(HttpStatus.SERVICE_UNAVAILABLE,
-                    "Falha ao " + operacao + " no Oracle: " + mensagem);
+            default -> {
+                // O pool so informa "Connection is not available"; a causa real fica no log.
+                log.error("Falha ao {} no Oracle", operacao, e);
+                yield new ApiException(HttpStatus.SERVICE_UNAVAILABLE,
+                        "Falha ao " + operacao + " no Oracle: " + mensagem);
+            }
         };
     }
 

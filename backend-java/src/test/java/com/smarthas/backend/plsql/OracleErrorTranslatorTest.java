@@ -24,6 +24,12 @@ class OracleErrorTranslatorTest {
     }
 
     @Test
+    void ora20004AlertaInexistenteViraNaoEncontrado() {
+        SQLException e = new SQLException("ORA-20004: SP_RESOLVER_ALERTA: alerta nao encontrado (ID 9).", "72000", 20004);
+        assertEquals(HttpStatus.NOT_FOUND, OracleErrorTranslator.traduzir("x", e).getStatus());
+    }
+
+    @Test
     void ora20002ViraRegraNegocio() {
         SQLException e = new SQLException("ORA-20002: parametro nulo", "72000", 20002);
         assertEquals(HttpStatus.BAD_REQUEST, OracleErrorTranslator.traduzir("x", e).getStatus());

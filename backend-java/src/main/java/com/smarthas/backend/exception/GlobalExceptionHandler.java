@@ -6,8 +6,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.time.LocalDateTime;
@@ -37,6 +39,11 @@ public class GlobalExceptionHandler {
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
                 .toList();
         return build(HttpStatus.BAD_REQUEST, mensagens);
+    }
+
+    @ExceptionHandler({MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ErrorResponse> handleParametroInvalido(Exception ex) {
+        return build(HttpStatus.BAD_REQUEST, List.of("Parametro ausente ou invalido: " + ex.getMessage()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

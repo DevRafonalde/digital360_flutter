@@ -2,8 +2,7 @@
 -- Smart HAS / Digital 360 - Fase 6 - Banco de Dados na Sociedade 5.0
 -- Script 01: Modelo fisico (DDL) - Oracle 11g ou superior
 -- ---------------------------------------------------------------------
--- Ordem de execucao: 01 -> 02 -> 03 -> 04 -> 05
--- Para recriar do zero, execute antes o 99_drop_all.sql
+-- Ordem de execucao: use 00_instalar.sql (recria tudo do zero)
 -- Observacao: textos sem acentuacao para evitar problemas de charset
 -- entre ferramentas (SQL Developer, SQL*Plus, Live SQL).
 -- =====================================================================
@@ -18,6 +17,7 @@ CREATE SEQUENCE SEQ_SH_LEITURA   START WITH 1000 INCREMENT BY 1 NOCACHE;
 CREATE SEQUENCE SEQ_SH_ALERTA    START WITH 1000 INCREMENT BY 1 NOCACHE;
 CREATE SEQUENCE SEQ_SH_RISCO     START WITH 1000 INCREMENT BY 1 NOCACHE;
 CREATE SEQUENCE SEQ_SH_RELATORIO START WITH 1000 INCREMENT BY 1 NOCACHE;
+CREATE SEQUENCE SEQ_SH_AUDITORIA START WITH 1000 INCREMENT BY 1 NOCACHE;
 
 -- ---------------------------------------------------------------------
 -- 1. Usuario do app Digital 360 (publico: idosos, baixo letramento)
@@ -171,6 +171,24 @@ CREATE TABLE T_SH_RELATORIO_USUARIO (
 );
 
 -- ---------------------------------------------------------------------
+-- 12. Auditoria dos alertas (preenchida pela trigger TRG_SH_ALERTA_AUDITORIA)
+-- Sem FK de proposito: o registro precisa sobreviver a exclusao do alerta.
+-- ---------------------------------------------------------------------
+CREATE TABLE T_SH_ALERTA_AUDITORIA (
+    ID_AUDITORIA   NUMBER(12)   CONSTRAINT PK_SH_ALERTA_AUDITORIA PRIMARY KEY,
+    ID_ALERTA      NUMBER(12)   NOT NULL,
+    ID_PEDIDO      NUMBER(10)   NOT NULL,
+    DS_OPERACAO    VARCHAR2(6)  NOT NULL
+        CONSTRAINT CK_SH_AUDIT_OPERACAO CHECK (DS_OPERACAO IN ('INSERT','UPDATE','DELETE')),
+    ST_ANTERIOR    VARCHAR2(10),
+    ST_NOVO        VARCHAR2(10),
+    DS_NIVEL       VARCHAR2(10) NOT NULL,
+    NM_USUARIO_BD  VARCHAR2(128) NOT NULL,
+    NM_MODULO      VARCHAR2(48),
+    DT_EVENTO      TIMESTAMP    DEFAULT SYSTIMESTAMP NOT NULL
+);
+
+-- ---------------------------------------------------------------------
 -- Indices de apoio as consultas e chaves estrangeiras
 -- ---------------------------------------------------------------------
 CREATE INDEX IX_SH_MATRIC_USUARIO  ON T_SH_MATRICULA (ID_USUARIO);
@@ -179,6 +197,7 @@ CREATE INDEX IX_SH_SENSOR_PEDIDO   ON T_SH_SENSOR (ID_PEDIDO);
 CREATE INDEX IX_SH_LEITURA_PROC    ON T_SH_LEITURA (FL_PROCESSADA, ID_SENSOR);
 CREATE INDEX IX_SH_ALERTA_PEDIDO   ON T_SH_ALERTA (ID_PEDIDO, ST_ALERTA);
 CREATE INDEX IX_SH_RISCO_PEDIDO    ON T_SH_RISCO_HIST (ID_PEDIDO, DT_CALCULO);
+CREATE INDEX IX_SH_AUDIT_ALERTA    ON T_SH_ALERTA_AUDITORIA (ID_ALERTA, DT_EVENTO);
 
 -- Comentarios de dicionario (documentacao no proprio banco)
 COMMENT ON TABLE T_SH_USUARIO           IS 'Usuarios do app Digital 360 (Smart HAS)';
@@ -192,3 +211,4 @@ COMMENT ON TABLE T_SH_LEITURA           IS 'Leituras (telemetria) dos sensores';
 COMMENT ON TABLE T_SH_ALERTA            IS 'Alertas por leitura critica ou risco logistico';
 COMMENT ON TABLE T_SH_RISCO_HIST        IS 'Historico de calculos do motor de risco';
 COMMENT ON TABLE T_SH_RELATORIO_USUARIO IS 'Relatorio resumido de engajamento/consumo por usuario';
+COMMENT ON TABLE T_SH_ALERTA_AUDITORIA  IS 'Trilha de auditoria dos alertas (preenchida por trigger)';

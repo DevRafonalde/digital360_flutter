@@ -5,6 +5,16 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
 ## [Unreleased]
 
 ### Added
+- **Consolidação PL/SQL**: functions e procedures agrupadas em `PKG_SH_RISCO`, `PKG_SH_IOT` e
+  `PKG_SH_USUARIO`. Novo `PKG_SH_CONSULTA` com Dynamic SQL (`DBMS_SQL` e `OPEN FOR`), triggers
+  `TRG_SH_ALERTA_AUDITORIA` e `TRG_SH_PEDIDO_ENTREGUE`, tabela `T_SH_ALERTA_AUDITORIA`,
+  testes PL/SQL automatizados e verificação de objetos inválidos.
+- `backend-java`: endpoints `/oracle/pedidos/busca`, `/oracle/pedidos/resumo`,
+  `/oracle/alertas/{id}/resolver` (ADMIN) e `/oracle/alertas/auditoria`; `Dockerfile` e
+  cobertura com JaCoCo.
+- **Pipeline CI/CD** (`.github/workflows/ci-cd.yml`): testes de todas as camadas, testes
+  PL/SQL em Oracle real, imagem publicada no GHCR, deploy em homologação (`deploy/`) com
+  smoke test, logs e relatórios como artefatos.
 - **Fase 6 — Oracle PL/SQL**: pasta `database-oracle/` com modelo de 11 tabelas, dados
   simulados, 4 functions (`FN_CALCULA_RISCO`, `FN_PROGRESSO_MEDIO_USUARIO`, `FN_NIVEL_RISCO`,
   `FN_RESUMO_PEDIDO`), 3 procedures (`SP_REGISTRAR_ALERTAS_SENSORES`, `SP_RECALCULAR_RISCO`,
@@ -16,6 +26,14 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
   JUnit/Mockito. Desligado por padrão (`ORACLE_ENABLED=false`).
 
 ### Fixed
+- App na web apontava para `10.0.2.2`, endereço que só existe no emulador Android. Agora usa
+  `localhost:8080`, e o CORS do `backend-java` aceita qualquer porta local (ajustável por
+  `CORS_ALLOWED_ORIGINS`).
+- Login com senha errada em backend real mostrava "tente novamente em instantes"; agora
+  mostra "Usuário ou senha incorretos".
+- `SP_RECALCULAR_RISCO` não abre mais alerta de risco para pedido já entregue.
+- `GlobalExceptionHandler`: parâmetro de consulta ausente ou com tipo inválido devolve 400
+  em vez de 500.
 - `GlobalExceptionHandler`: rota inexistente (`NoResourceFoundException`) agora devolve 404
   em vez de cair no handler genérico e virar 500.
 - Seletor de ambiente de backend (Mock / Python / Java) em Configurações →

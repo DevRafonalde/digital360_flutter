@@ -1,0 +1,259 @@
+name: CI/CD
+
+# Fluxo: testes de todas as camadas -> testes PL/SQL no Oracle -> publicacao
+# da imagem no GHCR -> deploy em homologacao com smoke test -> relatorio final.
+on:
+  push:
+    branches: [main, 'fase*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  flutter:
+    name: Flutter (analyze + test + build web)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: dart analyze lib test
+      - run: flutter test --reporter expanded | tee flutter-test.log
+        shell: bash -o pipefail {0}
+      - run: flutter build web --release
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-flutter
+          path: flutter-test.log
+          if-no-files-found: ignore
+
+  backend-python:
+    name: Backend Python (pytest)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - run: pytest -v --junitxml=pytest-relatorio.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-python
+          path: backend/pytest-relatorio.xml
+          if-no-files-found: ignore
+
+  dashboard:
+    name: Dashboard Angular (build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: dashboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: dashboard/package-lock.json
+      - run: npm ci
+      - run: npm run build
+
+  backend-java:
+    name: Backend Java (build + testes + cobertura)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: backend-java
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - run: mvn -B verify
+      - name: Resumo dos testes
+        if: always()
+        run: |
+          testes=0; falhas=0
+          for arquivo in target/surefire-reports/TEST-*.xml; do
+            [ -f "$arquivo" ] || continue
+            t=$(grep -m1 -o ' tests="[0-9]*"' "$arquivo" | grep -o '[0-9]*')
+            f=$(grep -m1 -o ' failures="[0-9]*"' "$arquivo" | grep -o '[0-9]*')
+            e=$(grep -m1 -o ' errors="[0-9]*"' "$arquivo" | grep -o '[0-9]*')
+            testes=$((testes + t)); falhas=$((falhas + f + e))
+          done
+          {
+            echo "### Backend Java"
+            echo "- Testes JUnit: **$testes** executados, **$falhas** com falha"
+            if [ -f target/site/jacoco/jacoco.csv ]; then
+              awk -F, 'NR > 1 { perdidas += $8; cobertas += $9 }
+                END { if (perdidas + cobertas > 0) printf "- Cobertura de linhas (JaCoCo): **%.1f%%**\n", 100 * cobertas / (perdidas + cobertas) }' \
+                target/site/jacoco/jacoco.csv
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-java
+          path: |
+            backend-java/target/surefire-reports/
+            backend-java/target/site/jacoco/
+          if-no-files-found: ignore
+
+  oracle-plsql:
+    name: Oracle PL/SQL (instalacao + testes)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Subir o Oracle Free
+        run: docker compose -f deploy/docker-compose.homolog.yml up -d --wait oracle
+      - name: Instalar tabelas, packages e triggers
+        run: bash deploy/oracle_aplicar.sh 00_instalar.sql "$GITHUB_WORKSPACE/relatorios/oracle/instalacao.log"
+      - name: Rodar os testes PL/SQL
+        run: bash deploy/oracle_aplicar.sh 09_testes_automatizados.sql "$GITHUB_WORKSPACE/relatorios/oracle/testes.log"
+      - name: Resumo dos testes
+        if: always()
+        run: |
+          {
+            echo "### Oracle PL/SQL"
+            grep -h 'RESULTADO' relatorios/oracle/testes.log || echo "Os testes nao chegaram ao fim. Veja o artefato relatorio-oracle."
+            grep -h '\[FALHA\]' relatorios/oracle/testes.log || true
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Encerrar o Oracle
+        if: always()
+        run: docker compose -f deploy/docker-compose.homolog.yml down -v
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-oracle
+          path: relatorios/oracle/
+          if-no-files-found: ignore
+
+  publicar-imagem:
+    name: Publicar imagem no GHCR
+    needs: [flutter, backend-python, dashboard, backend-java, oracle-plsql]
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      imagem: ${{ steps.nome.outputs.imagem }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Definir o nome da imagem
+        id: nome
+        run: |
+          repositorio="ghcr.io/${GITHUB_REPOSITORY,,}/smarthas-backend"
+          echo "repositorio=$repositorio" >> "$GITHUB_OUTPUT"
+          echo "imagem=$repositorio:sha-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+      - uses: docker/build-push-action@v6
+        with:
+          context: backend-java
+          push: true
+          tags: |
+            ${{ steps.nome.outputs.imagem }}
+            ${{ github.ref == 'refs/heads/main' && format('{0}:latest', steps.nome.outputs.repositorio) || '' }}
+      - name: Registrar a imagem no resumo
+        env:
+          IMAGEM: ${{ steps.nome.outputs.imagem }}
+        run: |
+          echo "### Imagem publicada" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`$IMAGEM\`" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy-homologacao:
+    name: Deploy em homologacao + smoke test
+    needs: publicar-imagem
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: homologacao
+    permissions:
+      contents: read
+      packages: read
+    env:
+      SMARTHAS_IMAGE: ${{ needs.publicar-imagem.outputs.imagem }}
+      RELATORIOS: ${{ github.workspace }}/relatorios/deploy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Gerar credenciais do ambiente
+        run: |
+          # Senhas Oracle com ate 30 caracteres: acima disso o JDBC nao conecta,
+          # embora o SQL*Plus aceite. O segredo do JWT exige pelo menos 32 bytes.
+          for variavel in ORACLE_ADMIN_PASSWORD:12 ORACLE_PASSWORD:12 JWT_SECRET:32; do
+            valor="Sh$(openssl rand -hex "${variavel#*:}")"
+            echo "::add-mask::$valor"
+            echo "${variavel%:*}=$valor" >> "$GITHUB_ENV"
+          done
+      - name: Implantar e validar
+        run: bash deploy/deploy_homolog.sh
+      - name: Publicar o resultado do smoke test
+        if: always()
+        run: |
+          if [ -f relatorios/deploy/smoke_test.md ]; then
+            cat relatorios/deploy/smoke_test.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "O deploy falhou antes do smoke test. Veja o artefato relatorio-deploy." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Encerrar o ambiente
+        if: always()
+        run: docker compose -f deploy/docker-compose.homolog.yml down -v
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-deploy
+          path: relatorios/deploy/
+          if-no-files-found: ignore
+
+  relatorio:
+    name: Relatorio final
+    needs: [flutter, backend-python, dashboard, backend-java, oracle-plsql, publicar-imagem, deploy-homologacao]
+    if: always()
+    runs-on: ubuntu-latest
+    env:
+      RESULTADOS: ${{ toJSON(needs) }}
+    steps:
+      - name: Montar o relatorio da execucao
+        run: |
+          {
+            echo "## Relatorio de execucao"
+            echo "Commit \`${GITHUB_SHA::7}\` em \`$GITHUB_REF_NAME\`, evento \`$GITHUB_EVENT_NAME\`."
+            echo
+            echo "| Etapa | Resultado |"
+            echo "|---|---|"
+            jq -r 'to_entries[] | "| \(.key) | \(.value.result) |"' <<< "$RESULTADOS"
+            echo
+            echo "Logs e relatorios detalhados: artefatos \`relatorio-*\` desta execucao."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Falhar se alguma etapa falhou
+        run: |
+          if jq -e 'to_entries | any(.value.result == "failure" or .value.result == "cancelled")' <<< "$RESULTADOS" > /dev/null; then
+            exit 1
+          fi

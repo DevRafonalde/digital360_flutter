@@ -1,10 +1,12 @@
 package com.smarthas.backend.plsql;
 
 import com.smarthas.backend.plsql.dto.OracleAlerta;
+import com.smarthas.backend.plsql.dto.OracleAuditoriaAlerta;
 import com.smarthas.backend.plsql.dto.OracleLeituraRegistrada;
 import com.smarthas.backend.plsql.dto.OracleLeituraRequest;
 import com.smarthas.backend.plsql.dto.OraclePedido;
 import com.smarthas.backend.plsql.dto.OracleRelatorioUsuario;
+import com.smarthas.backend.plsql.dto.OracleResumoPedidos;
 import com.smarthas.backend.plsql.dto.OracleRiscoLogistico;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -47,6 +49,25 @@ public class OraclePlsqlController {
         return service.listarPedidos();
     }
 
+    @GetMapping("/pedidos/busca")
+    @Operation(summary = "Busca flexivel com Dynamic SQL (PKG_SH_CONSULTA.FN_BUSCAR_PEDIDOS)",
+            description = "Filtros opcionais. ordenarPor: score, prazo, distancia, codigo ou status. direcao: ASC ou DESC.")
+    public List<OraclePedido> buscarPedidos(@RequestParam(name = "status", required = false) String status,
+                                            @RequestParam(name = "nivel", required = false) String nivel,
+                                            @RequestParam(name = "regiao", required = false) String regiao,
+                                            @RequestParam(name = "scoreMin", required = false) Integer scoreMin,
+                                            @RequestParam(name = "ordenarPor", required = false) String ordenarPor,
+                                            @RequestParam(name = "direcao", required = false) String direcao) {
+        return service.buscarPedidos(status, nivel, regiao, scoreMin, ordenarPor, direcao);
+    }
+
+    @GetMapping("/pedidos/resumo")
+    @Operation(summary = "Indicadores agrupados com Dynamic SQL (PKG_SH_CONSULTA.FN_RESUMO_POR_DIMENSAO)",
+            description = "dimensao: status, nivel, regiao ou parceiro.")
+    public List<OracleResumoPedidos> resumirPedidos(@RequestParam("dimensao") String dimensao) {
+        return service.resumirPedidos(dimensao);
+    }
+
     @GetMapping("/pedidos/{id}")
     @Operation(summary = "Pedido do Oracle por ID (view V_SH_PEDIDO_RISCO)")
     public OraclePedido buscarPedido(@PathVariable("id") long id) {
@@ -70,6 +91,19 @@ public class OraclePlsqlController {
     @Operation(summary = "Alertas gerados pelas procedures (filtro opcional: ABERTO/RESOLVIDO)")
     public List<OracleAlerta> listarAlertas(@RequestParam(name = "status", required = false) String status) {
         return service.listarAlertas(status);
+    }
+
+    @PostMapping("/alertas/{id}/resolver")
+    @Operation(summary = "Encerra o alerta (PKG_SH_IOT.SP_RESOLVER_ALERTA). Exige perfil ADMIN")
+    public ResponseEntity<Void> resolverAlerta(@PathVariable("id") long id) {
+        service.resolverAlerta(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/alertas/auditoria")
+    @Operation(summary = "Trilha gravada pela trigger TRG_SH_ALERTA_AUDITORIA (filtro opcional: alertaId)")
+    public List<OracleAuditoriaAlerta> listarAuditoria(@RequestParam(name = "alertaId", required = false) Long alertaId) {
+        return service.listarAuditoria(alertaId);
     }
 
     @PostMapping("/relatorios/usuarios")

@@ -2,10 +2,12 @@ package com.smarthas.backend.plsql;
 
 import com.smarthas.backend.exception.ApiException;
 import com.smarthas.backend.plsql.dto.OracleAlerta;
+import com.smarthas.backend.plsql.dto.OracleAuditoriaAlerta;
 import com.smarthas.backend.plsql.dto.OracleLeituraRegistrada;
 import com.smarthas.backend.plsql.dto.OracleLeituraRequest;
 import com.smarthas.backend.plsql.dto.OraclePedido;
 import com.smarthas.backend.plsql.dto.OracleRelatorioUsuario;
+import com.smarthas.backend.plsql.dto.OracleResumoPedidos;
 import com.smarthas.backend.plsql.dto.OracleRiscoLogistico;
 import org.springframework.http.HttpStatus;
 
@@ -36,6 +38,27 @@ public class OraclePlsqlService {
         validarId(idPedido, "pedido");
         return repository.buscarPedido(idPedido)
                 .orElseThrow(() -> ApiException.notFound("Pedido nao encontrado no Oracle (ID " + idPedido + ")."));
+    }
+
+    public List<OraclePedido> buscarPedidos(String status, String nivelRisco, String regiao, Integer scoreMin,
+                                            String ordenarPor, String direcao) {
+        return repository.buscarPedidos(status, nivelRisco, regiao, scoreMin, ordenarPor, direcao);
+    }
+
+    public List<OracleResumoPedidos> resumirPedidos(String dimensao) {
+        return repository.resumirPedidos(dimensao);
+    }
+
+    public void resolverAlerta(long idAlerta) {
+        validarId(idAlerta, "alerta");
+        repository.resolverAlerta(idAlerta);
+    }
+
+    public List<OracleAuditoriaAlerta> listarAuditoria(Long idAlerta) {
+        if (idAlerta != null) {
+            validarId(idAlerta, "alerta");
+        }
+        return repository.listarAuditoria(idAlerta);
     }
 
     public OracleRiscoLogistico recalcularRisco(long idPedido) {

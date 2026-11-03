@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
+
 /// Ambientes de backend que o app sabe falar. PYTHON e o backend real do
 /// time (FastAPI, cobre todo o app); JAVA e o backend Spring Boot construido
 /// na Fase 5, que cobre autenticacao, cursos, servicos e AI Logistics.
@@ -13,12 +15,16 @@ class ApiConstants {
   ApiConstants._();
 
   /// 10.0.2.2 = localhost da maquina host quando o app roda no emulador
-  /// Android (mesmo valor do projeto Kotlin original).
-  static const String pythonBaseUrl = 'http://10.0.2.2:8080';
+  /// Android (mesmo valor do projeto Kotlin original). No navegador, o
+  /// backend e acessado direto por localhost.
+  static const String _hostLocal =
+      kIsWeb ? 'http://localhost:8080' : 'http://10.0.2.2:8080';
+
+  static const String pythonBaseUrl = _hostLocal;
 
   /// Backend Spring Boot (Fase 5) - mesma porta 8080, pois cada um roda numa
   /// maquina/momento diferente; o usuario escolhe qual apontar em Configuracoes.
-  static const String javaBaseUrl = 'http://10.0.2.2:8080';
+  static const String javaBaseUrl = _hostLocal;
 
   /// URL efetivamente usada pelo ApiService. Comeca apontando para o Python
   /// (ambiente default historico do app) ate [aplicarAmbiente] rodar.

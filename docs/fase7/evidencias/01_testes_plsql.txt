@@ -1,0 +1,66 @@
+--- Objetos ---
+[OK]	package bodies validos = 4
+[OK]	triggers ativas = 2
+[OK]	functions/procedures soltas = 0
+--- PKG_SH_RISCO ---
+[OK]	score pedido 1 = 0
+[OK]	score pedido 2 = 100
+[OK]	score pedido 3 = 26
+[OK]	score pedido 4 = 8
+[OK]	score pedido 5 = 45
+[OK]	nivel de 75 = CRITICO
+[OK]	nivel de 74 = ALTO
+[OK]	nivel de 25 = MEDIO
+[OK]	nivel de 24 = BAIXO
+[OK]	pedido inexistente = -20001
+[OK]	score fora da faixa = -20002
+[OK]	recalculo do pedido 2 = CRITICO
+[OK]	recalculo nao duplica alerta = 1
+[OK]	historico do recalculo = 2
+--- PKG_SH_IOT e auditoria ---
+[OK]	alertas de sensor = 6
+[OK]	reexecucao e idempotente = 0
+[OK]	trigger audita os INSERTs = 7
+[OK]	alerta resolvido = RESOLVIDO
+[OK]	resolver de novo nao gera auditoria = 1
+[OK]	alerta inexistente = -20004
+--- PKG_SH_USUARIO ---
+[OK]	progresso de Maria = 35
+[OK]	progresso de Pedro (sem matricula) = 0
+=== Relatorio resumido por usuario - Smart HAS / Digital 360 ===
+ID  USUARIO		    CURSOS  PROGR.  PEDIDOS  ALERTAS  CLASSIFICACAO
+1   Maria Aparecida Lima    3	    35	    1	     3	      EM_PROGRESSO
+2   Jose Carlos Pereira     2	    55	    1	     0	      EM_PROGRESSO
+3   Ana Beatriz Souza	    2	    75	    1	     0	      ENGAJADO
+4   Antonio Ferreira	    1	    20	    1	     2	      INICIANTE
+5   Lucia Helena Costa	    1	    45	    1	     1	      EM_PROGRESSO
+6   Pedro Henrique Alves    0	    0	    0	     0	      INICIANTE
+Usuarios processados: 6
+[OK]	usuarios no relatorio = 6
+[OK]	usuario inexistente = -20003
+--- Dynamic SQL (PKG_SH_CONSULTA) ---
+[OK]	sem filtros = 5
+[OK]	ordem padrao: maior score primeiro = LM-2026-0002
+[OK]	filtro por status = 1
+[OK]	dois filtros combinados = 1
+[OK]	resultado dos dois filtros = LM-2026-0005
+[OK]	score minimo = 3
+[OK]	ordenacao por distancia = LM-2026-0003
+[OK]	injection no filtro vira texto comum = 0
+[OK]	injection na ordenacao = -20002
+[OK]	injection na direcao = -20002
+[OK]	status invalido = -20002
+[OK]	status muito longo = -20002
+[OK]	dimensao invalida = -20002
+[OK]	resumo: pedidos em risco no nivel CRITICO = 1
+[OK]	resumo: soma de todos os grupos = 5
+--- Trigger de automacao ---
+[OK]	alertas abertos do pedido 2 antes da entrega = 3
+[OK]	entrega encerra os alertas = 0
+[OK]	encerramento automatico fica auditado = 3
+[OK]	pedido entregue nao reabre alerta = 0
+[OK]	DELETE fica auditado = 1
+=== RESULTADO: 47 OK, 0 FALHA(S) ===
+
+PL/SQL procedure successfully completed.
+
