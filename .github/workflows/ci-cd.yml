@@ -205,10 +205,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Gerar credenciais do ambiente
         run: |
-          for variavel in ORACLE_ADMIN_PASSWORD ORACLE_PASSWORD JWT_SECRET; do
-            valor="Sh$(openssl rand -hex 32)"
+          # Senhas Oracle com ate 30 caracteres: acima disso o JDBC nao conecta,
+          # embora o SQL*Plus aceite. O segredo do JWT exige pelo menos 32 bytes.
+          for variavel in ORACLE_ADMIN_PASSWORD:12 ORACLE_PASSWORD:12 JWT_SECRET:32; do
+            valor="Sh$(openssl rand -hex "${variavel#*:}")"
             echo "::add-mask::$valor"
-            echo "$variavel=$valor" >> "$GITHUB_ENV"
+            echo "${variavel%:*}=$valor" >> "$GITHUB_ENV"
           done
       - name: Implantar e validar
         run: bash deploy/deploy_homolog.sh
