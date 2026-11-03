@@ -42,7 +42,7 @@ bash deploy/smoke_test.sh http://localhost:8080 "$relatorios/smoke_test.md"
 
 cat > "$relatorios/manifesto.txt" <<EOF
 imagem: ${SMARTHAS_IMAGE:-smarthas-backend:local (build local)}
-commit: $(git rev-parse HEAD)
+commit: $(git rev-parse HEAD 2>/dev/null || echo "fora de um repositorio git")
 data:   $(date -u +%Y-%m-%dT%H:%M:%SZ)
 EOF
 echo "==> Deploy concluido. Relatorios em $relatorios"

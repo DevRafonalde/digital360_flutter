@@ -26,6 +26,11 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/).
   JUnit/Mockito. Desligado por padrão (`ORACLE_ENABLED=false`).
 
 ### Fixed
+- App na web apontava para `10.0.2.2`, endereço que só existe no emulador Android. Agora usa
+  `localhost:8080`, e o CORS do `backend-java` aceita qualquer porta local (ajustável por
+  `CORS_ALLOWED_ORIGINS`).
+- Login com senha errada em backend real mostrava "tente novamente em instantes"; agora
+  mostra "Usuário ou senha incorretos".
 - `SP_RECALCULAR_RISCO` não abre mais alerta de risco para pedido já entregue.
 - `GlobalExceptionHandler`: parâmetro de consulta ausente ou com tipo inválido devolve 400
   em vez de 500.

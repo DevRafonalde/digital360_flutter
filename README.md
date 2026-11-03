@@ -41,8 +41,12 @@ Oracle em `localhost:1521/FREEPDB1`):
 
 ```bash
 bash deploy/deploy_homolog.sh                                 # sobe, instala e valida
-docker compose -f deploy/docker-compose.homolog.yml down -v   # encerra
+bash deploy/app_web_docker.sh                                 # app em http://localhost:5000
+docker compose -f deploy/docker-compose.homolog.yml down -v   # encerra o back-end e o Oracle
+docker rm -f smarthas-app-web                                 # encerra o app
 ```
+
+No app, escolha **Java** em Configurações → Conexão (avançado) para usar esse back-end.
 
 ## Funcionalidades
 

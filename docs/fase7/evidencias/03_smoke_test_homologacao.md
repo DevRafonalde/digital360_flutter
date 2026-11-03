@@ -3,6 +3,8 @@
 | Resultado | Verificação | HTTP | Esperado |
 |---|---|---|---|
 | ✅ OK | Swagger publica os novos endpoints | 200 | 200 |
+| ✅ OK | CORS aceita o app web em porta local | 200 | 200 |
+| ✅ OK | CORS recusa origem externa | 403 | 403 |
 | ✅ OK | Rota Oracle sem token é recusada | 403 | 403 |
 | ✅ OK | H2 da Fase 5 continua funcionando | 200 | 200 |
 | ✅ OK | View com risco calculado pelo package | 200 | 200 |
@@ -23,4 +25,4 @@
 | ✅ OK | Trigger: auditoria registrou a resolução | 200 | 200 |
 | ✅ OK | PKG_SH_USUARIO: relatório | 200 | 200 |
 
-**Resultado: 20 OK, 0 falha(s).**
+**Resultado: 22 OK, 0 falha(s).**

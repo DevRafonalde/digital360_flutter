@@ -7,7 +7,7 @@ Publicar no YouTube como **Não listado** e testar o link em uma aba anônima.
 - [ ] Docker Desktop aberto e, na raiz do repositório: `bash deploy/deploy_homolog.sh`
 - [ ] Swagger em http://localhost:8080/swagger-ui.html, login `admin`/`admin123` em `POST /auth/usuarios/login` e token em **Authorize**
 - [ ] SQL Developer ou DBeaver em `localhost:1521/FREEPDB1` (`smarthas`/`smarthas`)
-- [ ] App Flutter rodando no emulador ou no Chrome, com o ambiente **Java** em Configurações → Conexão (avançado)
+- [ ] App no ar: `bash deploy/app_web_docker.sh` e abra http://localhost:5000 no Chrome (não precisa ter Flutter instalado). Escolha **Java** em Configurações → Conexão (avançado). Login: `joao`/`123456`
 - [ ] Aba **Actions** do GitHub aberta em uma execução concluída
 - [ ] Gravação em 1080p, com o microfone testado
 
@@ -45,8 +45,8 @@ No SQL Developer, abra a pasta **Packages** e mostre a especificação do `PKG_S
 3. Mostre o resumo da execução e os artefatos `relatorio-*`: "cada execução deixa logs e relatórios".
 
 ## 3:45 – 4:35 | Resultados e app rodando (slide 9) — parte obrigatória
-"Foram 47 testes PL/SQL, 17 testes JUnit e 20 verificações no smoke test, todos sem falhas."
-Abra o app, faça login e navegue por Cursos e Logística.
+"Foram 47 testes PL/SQL, 17 testes JUnit, 85 testes do app e 22 verificações no smoke test, todos sem falhas."
+Abra o app, faça login e navegue por Cursos e Logística. Abra o pedido LM-2026-0002 e toque em **Recalcular risco de entrega** → CRÍTICO, 100.
 
 ## 4:35 – 5:00 | Encerramento (slide 10)
 "Agora temos regras organizadas, rastreabilidade e uma entrega repetível. Obrigado!"

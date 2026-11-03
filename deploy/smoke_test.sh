@@ -48,7 +48,25 @@ login() {
     | sed -n 's/.*"accessToken":"\([^"]*\)".*/\1/p'
 }
 
+verificar_cors() {
+  local nome="$1" origem="$2" esperado="$3"
+  local status
+  status="$(curl -s -m 30 -o /dev/null -w '%{http_code}' -X OPTIONS -H "Origin: $origem" \
+    -H 'Access-Control-Request-Method: POST' "$base/auth/usuarios/login")"
+  if [ "$status" = "$esperado" ]; then
+    ok=$((ok + 1))
+    echo "| ✅ OK | $nome | $status | $esperado |" >> "$relatorio"
+    echo "[OK]    $nome ($status)"
+  else
+    falhas=$((falhas + 1))
+    echo "| ❌ FALHA | $nome | $status | $esperado |" >> "$relatorio"
+    echo "[FALHA] $nome: HTTP $status, esperado $esperado"
+  fi
+}
+
 verificar "Swagger publica os novos endpoints" 200 '/oracle/pedidos/busca' "" GET /v3/api-docs
+verificar_cors "CORS aceita o app web em porta local" http://localhost:5173 200
+verificar_cors "CORS recusa origem externa" https://exemplo.com 403
 verificar "Rota Oracle sem token é recusada" 403 "" "" GET /oracle/pedidos
 
 admin="$(login admin admin123)"
