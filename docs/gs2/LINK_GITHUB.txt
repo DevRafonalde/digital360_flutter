@@ -1,0 +1,20 @@
+Global Solution 2 - 2026 | Turma 3SIOA
+Projeto: Digital 360 - Smart HAS
+Entregavel 3 - Documentacao completa (codigo-fonte, README e modelo de dados)
+
+Repositorio GitHub (compartilhado com o tutor):
+https://github.com/DevRafonalde/digital360_flutter
+
+Onde encontrar:
+- README.md e README.txt ......... raiz do repositorio
+- MER ............................ database-oracle/MER_SmartHAS.md
+- DER ............................ database-oracle/DER_SmartHAS.png
+- Scripts Oracle e PL/SQL ........ database-oracle/
+- Codigo do app Flutter .......... lib/
+
+Grupo:
+Eduardo Andrade Martins Vasques - RM 556970
+Otavio Ramos dos Santos Souza - RM 550361
+Enzo Miranda Ward de Paiva - RM 557632
+Rafael Pinto de Albuquerque - RM 559136
+Guilherme Leoni Vidigal Tiburcio - RM 557500

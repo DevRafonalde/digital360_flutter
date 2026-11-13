@@ -1,8 +1,17 @@
-# Digital 360 - Smart HAS | AI Logistics Extension (Enterprise Challenge Leroy Merlin)
+# Digital 360 - Smart HAS | Inclusão digital para idosos e pessoas com deficiência
 
-App mobile em **Flutter/Dart** do projeto **Smart HAS / Digital 360** (Sociedade 5.0),
-com a camada **AI Logistics Extension** desenvolvida em parceria com a Leroy Merlin
-para o Enterprise Challenge FIAP. Reimplementação da versão anterior feita em Kotlin.
+App mobile em **Flutter/Dart** que ajuda idosos, pessoas com deficiência e quem tem pouca
+familiaridade com tecnologia a usar o celular com autonomia: aprender o básico, chegar aos
+serviços públicos de que precisam (INSS, SUS, gov.br, documentos, benefícios) e acompanhar
+as próprias compras e entregas sem depender de terceiros.
+
+Entregue para a **Global Solution 2 – 2026 (CitizenTech: tecnologia centrada no cidadão)**.
+O projeto nasceu no Enterprise Challenge FIAP como **Smart HAS / Digital 360**, primeiro em
+Kotlin e depois reimplementado em Flutter. A camada de logística (AI Logistics Extension) foi
+criada com a mentoria da Leroy Merlin.
+
+> A versão em texto exigida pela GS está em [`README.txt`](README.txt). Os roteiros dos vídeos
+> e os arquivos `.txt` com os links da entrega estão em [`docs/gs2/`](docs/gs2/).
 
 ## Grupo
 - Eduardo Andrade Martins Vasques - RM 556970
@@ -10,6 +19,127 @@ para o Enterprise Challenge FIAP. Reimplementação da versão anterior feita em
 - Enzo Miranda Ward de Paiva - RM 557632
 - Rafael Pinto de Albuquerque - RM 559136
 - Guilherme Leoni Vidigal Tiburcio - RM 557500
+
+## O problema e a proposta (CitizenTech)
+
+**Problema real.** Serviços essenciais migraram para o celular, como o extrato do INSS, o
+agendamento no SUS, a 2ª via de documentos, o Bolsa Família e o Pix. Quem não domina o
+aparelho fica dependente de filhos, vizinhos ou atendentes. Fica também mais exposto a golpes
+digitais e deixa de exercer direitos que já tem. Esse público inclui idosos, pessoas com
+deficiência visual ou motora e adultos com baixo letramento digital. Os apps de governo e de
+varejo raramente são pensados para ele: letra pequena, muitos passos e nenhuma ajuda por voz.
+
+**Em números:**
+- **1 em cada 4 brasileiros com 60 anos ou mais não usou a internet em 2025.** Entre os
+  idosos, 74,5% usaram, contra 91,8% na faixa de 50 a 59 anos. É o menor percentual entre
+  todas as faixas etárias. Fonte: IBGE, PNAD Contínua TIC 2025.
+- **"Não saber utilizar" é o principal motivo** de quem não usa a internet, citado por 44,9%
+  das pessoas de 10 anos ou mais que estão fora da rede. Motivos econômicos somam 9%. Fonte:
+  IBGE, PNAD Contínua TIC 2025.
+- **16 milhões dos 28 milhões de brasileiros que não usam a internet têm mais de 60 anos.**
+  Fonte: Cetic.br/NIC.br, TIC Domicílios 2025.
+
+Ou seja, o maior obstáculo não é o preço nem a falta de sinal, mas saber usar. É nisso que o
+app atua.
+
+<sub>Fontes: IBGE, PNAD Contínua TIC 2025, divulgada em 02/07/2026 e noticiada pela
+[Teletime](https://teletime.com.br/02/07/2026/usuarios-internet-brasil-ultrapassa-90/).
+Cetic.br/NIC.br, TIC Domicílios 2025, noticiada pela
+[Viva](https://viva.com.br/tecnologia/28-milhoes-de-brasileiros-nao-usam-internet-a-maioria-acima-dos-60-anos.html).
+As duas pesquisas usam metodologias diferentes, então os totais de não usuários não são
+comparáveis entre si.</sub>
+
+**Público beneficiado.** Idosos, pessoas com deficiência, cidadãos com baixo letramento digital
+e os cuidadores e familiares que os apoiam.
+
+**Proposta de valor.** Um único app, com interface simples e acessível (fonte ajustável, alto
+contraste, leitura em voz alta e busca por voz), que:
+
+1. **Ensina** o uso do celular e dos serviços digitais em trilhas curtas: primeiros passos,
+   gov.br, segurança contra golpes e Pix.
+2. **Orienta** o acesso a serviços públicos e direitos (INSS, SUS, documentos, assistência
+   social, Estatuto do Idoso), com o passo a passo de cada um lido em voz alta.
+3. **Acompanha** as compras e entregas do cidadão. O app calcula o risco de atraso com base no
+   clima real da região, avisa com antecedência e permite reagendar com um toque.
+4. **Conecta** a pessoa a uma rede de apoio: o modo cuidador, em que um familiar acompanha o
+   progresso, e um fórum em que a comunidade tira dúvidas e cria cursos.
+
+## Relação com os Objetivos de Desenvolvimento Sustentável (ODS)
+
+| ODS | Meta | Como o app contribui |
+|---|---|---|
+| **ODS 10 – Redução das desigualdades** (principal) | 10.2: promover a inclusão social, econômica e política de todos, independentemente da idade e da deficiência | Diminui a exclusão digital de idosos e pessoas com deficiência, que hoje dependem de terceiros para acessar benefícios, saúde e documentos. Leitura em voz alta, busca por voz, fonte ajustável e alto contraste removem barreiras de uso. |
+| **ODS 4 – Educação de qualidade** | 4.4: ampliar as competências digitais de jovens e adultos. 4.5: garantir acesso à educação para pessoas com deficiência e em situação de vulnerabilidade | As trilhas de aprendizagem ensinam habilidades digitais do dia a dia. A comunidade cria cursos novos, e o certificado de conclusão valoriza o aprendizado. |
+| **ODS 9 – Indústria, inovação e infraestrutura** | 9.c: ampliar o acesso às tecnologias de informação e comunicação | Leva o acesso aos serviços digitais a quem já tem celular, mas não consegue usá-lo plenamente. |
+
+## As 3 funcionalidades principais (além de login e cadastro)
+
+| # | Funcionalidade | Valor para o cidadão | Onde está no código |
+|---|---|---|---|
+| 1 | **Trilhas de aprendizagem digital** | Cursos curtos sobre o uso do celular, o gov.br, golpes e o Pix, com progresso salvo, conteúdo lido em voz alta, certificado em PDF e cursos criados pela comunidade | `lib/ui/screens/cursos_screen.dart`, `detalhe_curso_screen.dart`, `licao_modulo_screen.dart`, `lib/providers/cursos_provider.dart`, `lib/data/services/certificado_service.dart` |
+| 2 | **Guia de serviços públicos e direitos** | Busca por texto ou voz, passo a passo lido em voz alta, favoritos e histórico de buscas, cobrindo INSS, SUS, documentos, Bolsa Família e Estatuto do Idoso | `lib/ui/screens/guia_screen.dart`, `detalhe_servico_screen.dart`, `lib/providers/servicos_provider.dart`, `lib/data/services/tts_service.dart` |
+| 3 | **Acompanhamento de entregas com alerta de risco** | Mostra o risco de atraso calculado com o clima real (Open-Meteo), envia notificação nos riscos ALTO e CRÍTICO, permite reagendar com 1 toque e avaliar a entrega, e exibe o mapa da rota | `lib/ui/screens/logistica_screen.dart`, `detalhe_entrega_screen.dart`, `mapa_screen.dart`, `lib/providers/logistica_provider.dart`, `lib/data/services/weather_service.dart` |
+
+Funcionalidades complementares: modo cuidador (`acompanhamento_screen.dart`), fórum
+(`forum_screen.dart`), gamificação (`conquistas_screen.dart`), assistente
+(`assistente_screen.dart`, que é baseado em regras e não usa IA generativa) e painel de impacto
+(`impacto_screen.dart`).
+
+## Gerenciamento de memória e eficiência
+
+Boas práticas aplicadas no app Flutter. Os números vêm de uma busca no código de `lib/`.
+
+| Prática | Como aparece no código | Por que importa |
+|---|---|---|
+| **Liberação de controllers em `dispose()`** | 10 telas com estado sobrescrevem `dispose()` e liberam 25 recursos (a maioria `TextEditingController`, além de um `ScrollController` e um `PageController`). Exemplos: `login_screen.dart`, `register_screen.dart`, `assistente_screen.dart`, `guia_screen.dart`, `onboarding_screen.dart` | Controllers mantêm listeners e buffers nativos. Sem `dispose()`, cada abertura de tela deixaria objetos presos na memória (vazamento). |
+| **Checagem de `mounted` após `await`** | 25 checagens `if (!mounted)` ou `context.mounted` antes de usar `setState` ou `context` depois de chamadas assíncronas | Evita atualizar um widget que já saiu da árvore. Isso geraria erro e manteria referências vivas sem necessidade. |
+| **Widgets `const`** | Cerca de 740 usos de construtores `const` em `lib/` | Widgets `const` são criados uma única vez e reaproveitados. O Flutter pula a reconstrução deles, o que poupa alocação e trabalho do *garbage collector*. |
+| **Listas preguiçosas (`ListView.builder` / `.separated`)** | 7 telas: cursos, guia de serviços, logística, fórum, assistente, meus cursos e acompanhamento | Só os itens visíveis são construídos. A memória fica estável mesmo com listas grandes. |
+| **Rebuild seletivo com Provider** | Um `ChangeNotifier` por domínio (10 providers em `main.dart`). `context.watch` só onde a tela precisa redesenhar. 69 usos de `context.read` em callbacks, que não registram escuta | Uma mudança de estado redesenha só as telas interessadas, e não o app inteiro. |
+| **Singleton de rede com cliente HTTP reutilizado** | `ApiService.instance` com um único `http.Client` (`lib/data/services/api_service.dart`) | Uma instância serve todos os providers. Ninguém duplica estado nem abre conexões novas a cada chamada, e o cliente aproveita o *pool* de conexões. |
+| **Timeout em todas as chamadas de rede** | 10 s na API e 8 s no ViaCEP, Open-Meteo e GPS | Requisições penduradas não ficam segurando memória nem a tela de carregamento indefinidamente. |
+| **Coleções com limite** | Histórico de buscas limitado a 8 itens, sem duplicatas (`servicos_provider.dart`, `_maxHistorico`) | O dado salvo localmente não cresce sem controle. |
+| **Recursos pesados sob demanda** | O certificado em PDF só é gerado quando o usuário pede (`certificado_service.dart`). As telas de detalhe são criadas ao navegar e descartadas ao voltar | Não ocupa memória com algo que a maioria dos usuários não usa a cada sessão. |
+| **Escolha consciente de `IndexedStack`** | A tela inicial mantém as 5 abas vivas, incluindo o mapa (`home_screen.dart`) | É uma troca deliberada: gasta um pouco mais de memória para preservar rolagem e estado e evitar refazer as chamadas de rede ao trocar de aba. Com só 5 abas, o custo é pequeno e economiza dados móveis, o que importa para o público do app. |
+| **Build de release** | `flutter build web --release` no CI (`.github/workflows/ci-cd.yml`) e em `deploy/app_web_docker.sh` | O código é compilado e passa por *tree shaking*, que remove código e ícones não usados e reduz o tamanho do pacote e o consumo de memória. |
+
+**Ponto de melhoria identificado.** Os controllers das telas são todos liberados, mas 7
+`TextEditingController` criados dentro de diálogos ainda não recebem `dispose()`. São os
+diálogos de código do cuidador, comentário de curso, avaliação de entrega, nova pergunta do
+fórum (2), "esqueci minha senha" e edição de nome. O impacto é pequeno, porque cada um só vive
+enquanto o diálogo está aberto. A correção planejada é mover cada diálogo para um widget com
+estado próprio, que libera o controller no seu `dispose()`. Fazer o `dispose()` logo depois de
+`await showDialog(...)` não serve, porque a animação de saída ainda usa o controller.
+
+## Tecnologias adotadas e benefícios
+
+| Tecnologia | Onde | Por que foi escolhida |
+|---|---|---|
+| **Flutter + Dart** | `lib/` | Um único código para Android, iOS e web, com interface idêntica nas três plataformas. Tem o *hot reload* para iterar rápido no design acessível e componentes Material 3 com suporte nativo a escala de fonte e leitores de tela. |
+| **Provider** (`ChangeNotifier`) | `lib/providers/` | É a gestão de estado recomendada pela documentação do Flutter. Simples de testar (há testes de todos os providers) e com rebuild seletivo. |
+| **http** | `api_service.dart` | Cliente REST leve, com suporte a timeout e reaproveitamento de conexão. |
+| **flutter_tts / speech_to_text** | `tts_service.dart`, `guia_screen.dart` | Leitura em voz alta e busca por voz para quem tem dificuldade de leitura ou de digitação. |
+| **flutter_secure_storage / local_auth** | `session_service.dart`, `biometria_service.dart` | Tokens guardados no Keystore ou Keychain. O login por digital poupa o idoso de digitar a senha toda vez. |
+| **shared_preferences** | `perfil_local_service.dart`, providers | Guarda preferências como fonte, tema, favoritos e histórico sem precisar de servidor. |
+| **google_maps_flutter / flutter_map (OpenStreetMap) / geolocator** | `mapa_screen.dart`, `location_service.dart` | Mapa da entrega. A versão web usa OpenStreetMap, que funciona sem chave paga. |
+| **Firebase (FCM, Analytics, Crashlytics) / flutter_local_notifications** | `notification_service.dart`, `analytics_service.dart` | Avisos de risco de atraso com deep link para o pedido, além de monitoramento de uso e falhas. |
+| **pdf / printing / share_plus** | `certificado_service.dart`, `indicacao_screen.dart` | Certificado de conclusão gerado no próprio aparelho e compartilhamento pelo menu nativo do sistema. |
+| **Open-Meteo e ViaCEP** | `weather_service.dart`, `viacep_service.dart` | APIs públicas e gratuitas. O clima entra de fato no cálculo do risco de entrega. |
+| **Java 21 + Spring Boot** | `backend-java/` | API REST com JWT, H2 para desenvolvimento e integração JDBC com o Oracle. |
+| **Python + FastAPI** | `backend/` | Back-end das heurísticas de recomendação, risco e sazonalidade, com testes em pytest. |
+| **Oracle Database + PL/SQL** | `database-oracle/` | Regras de negócio perto dos dados: cálculo de risco, alertas de sensores, relatórios e auditoria por trigger. |
+| **Docker e GitHub Actions** | `deploy/`, `.github/workflows/ci-cd.yml` | Ambiente de homologação reproduzível e pipeline que testa e publica a cada push. |
+
+## Modelo de dados (MER e DER) e automação PL/SQL
+
+- **MER (modelo conceitual):** [`database-oracle/MER_SmartHAS.md`](database-oracle/MER_SmartHAS.md)
+- **DER (modelo lógico/físico, 12 tabelas):** [`database-oracle/DER_SmartHAS.png`](database-oracle/DER_SmartHAS.png) (fonte em `DER_SmartHAS.mmd`)
+- **Rotinas PL/SQL que automatizam o processo:**
+  - `PKG_SH_RISCO`: calcula o score de risco de cada entrega e grava o histórico e a recomendação (`SP_RECALCULAR_RISCO`).
+  - `PKG_SH_IOT`: transforma leituras de sensores fora do limite em alertas e permite resolvê-los.
+  - `PKG_SH_USUARIO`: calcula o progresso médio do usuário nos cursos e gera o relatório consolidado (indicadores por usuário).
+  - `PKG_SH_CONSULTA`: busca e resumo de pedidos com Dynamic SQL e proteção contra SQL Injection.
+  - Triggers `TRG_SH_ALERTA_AUDITORIA` (auditoria de cada mudança de alerta) e `TRG_SH_PEDIDO_ENTREGUE` (encerra os alertas quando a entrega é concluída).
 
 ## Arquitetura
 
@@ -124,15 +254,12 @@ Fluxo: **UI -> Provider (estado) -> Service (rede) -> Model**. Equivale ao MVVM
    flutter run -d chrome
    ```
 
-O app já roda **sem backend** (`ApiConstants.useMock = true`, em
-`lib/core/constants/api_constants.dart`), com dados mock idênticos aos usados nos
-testes automatizados de heurística do backend real. Para apontar ao backend
-real da AI Logistics Extension:
-```dart
-static const bool useMock = false;
-static const String baseUrl = 'http://10.0.2.2:8080'; // emulador Android
-```
-(veja como subir o backend em [`backend/README.md`](backend/README.md))
+O app já roda **sem backend**: o ambiente padrão é **Mock**, com dados idênticos aos
+usados nos testes automatizados de heurística do backend real. Para usar um backend
+real, escolha **Python** ou **Java** em Configurações → Conexão (avançado). Os
+endereços ficam em `lib/core/constants/api_constants.dart`. Veja como subir os
+backends em [`backend/README.md`](backend/README.md) e
+[`backend-java/README.md`](backend-java/README.md).
 
 ## Configurar chaves (opcional, apenas para o mapa mobile)
 - **Google Maps** (só necessário no Android/iOS - a versão web usa OpenStreetMap
