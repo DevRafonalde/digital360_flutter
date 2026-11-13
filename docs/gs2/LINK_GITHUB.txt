@@ -3,7 +3,7 @@ Projeto: Digital 360 - Smart HAS
 Entregavel 3 - Documentacao completa (codigo-fonte, README e modelo de dados)
 
 Repositorio GitHub (compartilhado com o tutor):
-https://github.com/DevRafonalde/digital360_flutter
+https://github.com/DevRafonalde/digital360_flutter/tree/GlobalSolution2
 
 Onde encontrar:
 - README.md e README.txt ......... raiz do repositorio

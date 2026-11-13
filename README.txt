@@ -12,7 +12,7 @@ GRUPO
   - Rafael Pinto de Albuquerque .......... RM 559136
   - Guilherme Leoni Vidigal Tiburcio ..... RM 557500
 
-Repositorio: https://github.com/DevRafonalde/digital360_flutter
+Repositorio: https://github.com/DevRafonalde/digital360_flutter/tree/GlobalSolution2
 
 --------------------------------------------------------------------------------
 1. O PROBLEMA E A SOLUCAO
